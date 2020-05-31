@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QSystemTrayIcon>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -13,17 +14,13 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
-    void exit();
 
-signals:
-    void minimizeToTray();
-
-protected:
-    void closeEvent(QCloseEvent* event) override;
-    void changeEvent(QEvent* event) override;
+private slots:
+    void on_actionExit_triggered();
+    void on_actionPreferences_triggered();
+    void on_actionOpen_triggered();
 
 private:
     Ui::MainWindow* ui = nullptr;
-    bool mIsExiting = false;
-
+    QSystemTrayIcon* mTrayIcon = nullptr;
 };

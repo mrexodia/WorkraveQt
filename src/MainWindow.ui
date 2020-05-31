@@ -18,19 +18,38 @@
     <normaloff>:/sheep.svg</normaloff>:/sheep.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget"/>
-  <action name="actionTrayExit">
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuTray">
+    <property name="title">
+     <string>Tray</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionPreferences"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <addaction name="menuTray"/>
+  </widget>
+  <action name="actionExit">
    <property name="text">
     <string>E&amp;xit</string>
    </property>
   </action>
-  <action name="actionTrayOpen">
+  <action name="actionPreferences">
+   <property name="text">
+    <string>&amp;Preferences</string>
+   </property>
+  </action>
+  <action name="actionOpen">
    <property name="text">
     <string>&amp;Open</string>
-   </property>
-  </action>
-  <action name="actionFileExit">
-   <property name="text">
-    <string>E&amp;xit</string>
    </property>
   </action>
  </widget>

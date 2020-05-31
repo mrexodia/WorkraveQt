@@ -8,8 +8,13 @@
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , mTrayIcon(new QSystemTrayIcon(this))
 {
     ui->setupUi(this);
+    mTrayIcon->setIcon(windowIcon());
+    mTrayIcon->setContextMenu(ui->menuTray);
+    mTrayIcon->setToolTip(QApplication::applicationName());
+    mTrayIcon->show();
 }
 
 MainWindow::~MainWindow()
@@ -17,33 +22,17 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::exit()
+void MainWindow::on_actionExit_triggered()
 {
-    mIsExiting = true;
     close();
 }
 
-void MainWindow::closeEvent(QCloseEvent* event)
+void MainWindow::on_actionPreferences_triggered()
 {
-    if(mIsExiting)
-    {
-        QMainWindow::closeEvent(event);
-    }
-    else
-    {
-        event->ignore();
-        hide();
-    }
+
 }
 
-void MainWindow::changeEvent(QEvent* event)
+void MainWindow::on_actionOpen_triggered()
 {
-    if (event->type() == QEvent::WindowStateChange)
-    {
-        if (isMinimized())
-            setWindowFlags(windowFlags() | Qt::Tool);
-        else
-            setWindowFlags(windowFlags() & ~Qt::Tool);
-    }
-    return QMainWindow::changeEvent(event);
+
 }

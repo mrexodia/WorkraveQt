@@ -1,7 +1,10 @@
-#include "MyApplication.h"
+#include <QApplication>
+
+#include "MainWindow.h"
 
 int main(int argc, char *argv[])
 {
-    MyApplication a(argc, argv);
+    QApplication a(argc, argv);
+    MainWindow w;
     return a.exec();
 }
