@@ -9,6 +9,9 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , mTrayIcon(new QSystemTrayIcon(this))
+    , mPreferencesDialog(new PreferencesDialog(nullptr))
+    , mTimerDialog(new TimerDialog(this))
+    , mBreakDialog(new BreakDialog(nullptr))
 {
     ui->setupUi(this);
     mTrayIcon->setIcon(windowIcon());
@@ -29,10 +32,15 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::on_actionPreferences_triggered()
 {
-
+    mPreferencesDialog->show();
 }
 
 void MainWindow::on_actionOpen_triggered()
 {
+    mTimerDialog->show();
+}
 
+void MainWindow::on_actionBreak_triggered()
+{
+    mBreakDialog->show();
 }
