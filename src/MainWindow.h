@@ -20,16 +20,21 @@ public:
     ~MainWindow();
 
 private slots:
+    void trayIconActivatedSlot(QSystemTrayIcon::ActivationReason reason);
+    void tickTimeoutSlot();
+
     void on_actionExit_triggered();
     void on_actionPreferences_triggered();
     void on_actionOpen_triggered();
-
     void on_actionBreak_triggered();
 
 private:
     Ui::MainWindow* ui = nullptr;
     QSystemTrayIcon* mTrayIcon = nullptr;
+    QTimer* mTickTimer = nullptr;
     PreferencesDialog* mPreferencesDialog = nullptr;
     TimerDialog* mTimerDialog = nullptr;
     BreakDialog* mBreakDialog = nullptr;
+    QRect mTimerDialogGeometry;
+    int mMicroBreakTick = 0;
 };

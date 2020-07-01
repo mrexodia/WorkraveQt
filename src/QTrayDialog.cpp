@@ -6,7 +6,8 @@
 QTrayDialog::QTrayDialog(QWidget* parent)
     : QDialog(parent)
 {
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint | Qt::MSWindowsFixedSizeDialogHint);
+    setWindowFlag(Qt::WindowContextHelpButtonHint, false);
+    setWindowFlag(Qt::MSWindowsFixedSizeDialogHint);
 }
 
 void QTrayDialog::closeEvent(QCloseEvent* event)

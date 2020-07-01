@@ -5,6 +5,7 @@ TimerDialog::TimerDialog(QWidget* parent) :
     QTrayDialog(parent),
     ui(new Ui::TimerDialog)
 {
+    setWindowFlag(Qt::WindowStaysOnTopHint);
     ui->setupUi(this);
 }
 
