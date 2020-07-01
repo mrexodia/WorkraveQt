@@ -13,8 +13,13 @@ class BreakDialog : public QTrayDialog
 public:
     explicit BreakDialog(QWidget* parent = nullptr);
     ~BreakDialog();
+    void setBreakDuration(int breakDuration);
+    void setBreakProgress(int seconds);
 
 private:
     Ui::BreakDialog* ui;
+    int mBreakDuration = 0;
+
+    static QString timeFormat(int seconds);
 };
 

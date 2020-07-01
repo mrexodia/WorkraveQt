@@ -37,4 +37,5 @@ private:
     BreakDialog* mBreakDialog = nullptr;
     QRect mTimerDialogGeometry;
     int mMicroBreakTick = 0;
+    bool mInBreak = false;
 };

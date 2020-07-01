@@ -53,21 +53,49 @@ void MainWindow::trayIconActivatedSlot(QSystemTrayIcon::ActivationReason reason)
 void MainWindow::tickTimeoutSlot()
 {
     mMicroBreakTick += 1;
-    if(mMicroBreakTick == 10)
+    qDebug() << "mMicroBreakTick" << mMicroBreakTick;
+
+    const int microBreakCycle = 10;
+    const int microBreakNotification = microBreakCycle - 5;
+    const int microBreakDuration = 15;
+    assert(microBreakCycle > microBreakNotification);
+
+    if(mInBreak)
     {
-        mTrayIcon->showMessage("Title", "Micro break in 10 seconds", QSystemTrayIcon::Information, 1000);
+        mBreakDialog->setBreakProgress(mMicroBreakTick);
+        if(mMicroBreakTick == microBreakDuration)
+        {
+            mInBreak = false;
+            mBreakDialog->hide();
+            mMicroBreakTick = 0;
+        }
     }
-    else if(mMicroBreakTick == 15)
+    else
     {
-        // TODO: register a proper microbreak
-        mMicroBreakTick = 0;
-        mBreakDialog->show();
+        if(mMicroBreakTick == microBreakNotification)
+        {
+            auto secondsLeft = microBreakCycle - microBreakNotification;
+            QString message = tr("Micro break in %1 seconds").arg(secondsLeft);
+            if(secondsLeft == 1)
+                message = tr("Micro break in 1 second");
+            mTrayIcon->showMessage(QString(), message, QSystemTrayIcon::Information, 1000);
+        }
+        else if(mMicroBreakTick == microBreakCycle)
+        {
+            mMicroBreakTick = 0;
+            mInBreak = true;
+            mBreakDialog->setBreakDuration(microBreakDuration);
+            mBreakDialog->setWindowTitle("Micro break");
+            mBreakDialog->show();
+            mBreakDialog->activateWindow();
+        }
     }
-    qDebug() << "timeout";
 }
 
 void MainWindow::on_actionExit_triggered()
 {
+    mTimerDialog->close();
+    mBreakDialog->close();
     close();
 }
 
