@@ -1,0 +1,7 @@
+root = true
+
+[*.{c,h,cpp,hpp,asm,txt,pro,cs}]
+indent_style = space
+indent_size = 4
+end_of_line = crlf
+trim_trailing_whitespace = true
