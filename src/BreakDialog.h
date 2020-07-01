@@ -16,6 +16,9 @@ public:
     void setBreakDuration(int breakDuration);
     void setBreakProgress(int seconds);
 
+private slots:
+    void on_pushButtonLock_clicked();
+
 private:
     Ui::BreakDialog* ui;
     int mBreakDuration = 0;

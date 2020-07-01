@@ -2,6 +2,8 @@
 #include "ui_BreakDialog.h"
 #include "Helpers.h"
 
+#include <QMessageBox>
+
 BreakDialog::BreakDialog(QWidget* parent) :
     QTrayDialog(parent),
     ui(new Ui::BreakDialog)
@@ -29,4 +31,9 @@ void BreakDialog::setBreakProgress(int seconds)
     ui->progressBarTimer->setValue(seconds);
     ui->progressBarTimer->update();
     ui->labelTimer->setText(Helpers::timeFormat(mBreakDuration - seconds));
+}
+
+void BreakDialog::on_pushButtonLock_clicked()
+{
+    QMessageBox::information(this, "TODO", "Not yet implemented!");
 }
