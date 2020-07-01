@@ -25,6 +25,12 @@ MainWindow::MainWindow(QWidget* parent)
     mTickTimer->setInterval(1000);
     connect(mTickTimer, &QTimer::timeout, this, &MainWindow::tickTimeoutSlot);
     mTickTimer->start();
+
+    assert(mMicroBreakCycle > mMicroBreakNotification);
+    assert(mMicroBreakCycle - mMicroBreakNotification < mMicroBreakDuration);
+
+    mTimerDialog->setMicroBreakMaximum(mMicroBreakCycle);
+    mTimerDialog->setRestBreakMaximum(mRestBreakCycle);
 }
 
 MainWindow::~MainWindow()
@@ -53,41 +59,103 @@ void MainWindow::trayIconActivatedSlot(QSystemTrayIcon::ActivationReason reason)
 void MainWindow::tickTimeoutSlot()
 {
     mMicroBreakTick += 1;
-    qDebug() << "mMicroBreakTick" << mMicroBreakTick;
+    mRestBreakTick += 1;
+    qDebug() << "mMicroBreakTick" << mMicroBreakTick << "mRestBreakTick" << mRestBreakTick;
 
-    const int microBreakCycle = 10;
-    const int microBreakNotification = microBreakCycle - 5;
-    const int microBreakDuration = 15;
-    assert(microBreakCycle > microBreakNotification);
-
-    if(mInBreak)
+    auto startBreak = [this](const QString& type, int duration)
     {
-        mBreakDialog->setBreakProgress(mMicroBreakTick);
-        if(mMicroBreakTick == microBreakDuration)
+        mBreakDialog->setBreakDuration(duration);
+        mBreakDialog->setWindowTitle(type);
+        mBreakDialog->show();
+        mBreakDialog->activateWindow();
+        mBreakDialog->setFocus();
+    };
+
+    auto notifyBreak = [this](const QString& type, int secondsLeft)
+    {
+        QString message = tr("%1 in %2 seconds").arg(type).arg(secondsLeft);
+        if(secondsLeft == 1)
+            message = tr("%1 in 1 second").arg(type);
+        mTrayIcon->showMessage(QString(), message, QSystemTrayIcon::Information, 1000);
+    };
+
+    if(mInRestBreak)
+    {
+        assert(!mInMicroBreak);
+        mMicroBreakTick -= 1;
+
+        mBreakDialog->setBreakProgress(mRestBreakTick);
+        if(mRestBreakTick == mRestBreakDuration)
         {
-            mInBreak = false;
+            mInRestBreak = false;
+            mRestBreakTick = 0;
             mBreakDialog->hide();
-            mMicroBreakTick = 0;
+            mTimerDialog->setRestBreakMaximum(mRestBreakCycle);
+            mTimerDialog->setMicroBreakMaximum(mMicroBreakCycle);
         }
     }
     else
     {
-        if(mMicroBreakTick == microBreakNotification)
-        {
-            auto secondsLeft = microBreakCycle - microBreakNotification;
-            QString message = tr("Micro break in %1 seconds").arg(secondsLeft);
-            if(secondsLeft == 1)
-                message = tr("Micro break in 1 second");
-            mTrayIcon->showMessage(QString(), message, QSystemTrayIcon::Information, 1000);
-        }
-        else if(mMicroBreakTick == microBreakCycle)
+        assert(mRestBreakTick <= mRestBreakCycle);
+
+        // Once the rest break notification is shown, reset the micro break timer
+        if(mRestBreakTick >= mRestBreakNotification)
         {
             mMicroBreakTick = 0;
-            mInBreak = true;
-            mBreakDialog->setBreakDuration(microBreakDuration);
-            mBreakDialog->setWindowTitle("Micro break");
-            mBreakDialog->show();
-            mBreakDialog->activateWindow();
+            mTimerDialog->setMicroBreakMaximum(0);
+        }
+
+        auto breakType = tr("Rest break");
+        mTimerDialog->setRestBreakProgress(mRestBreakTick);
+        if(mRestBreakTick == mRestBreakCycle)
+        {
+            mInRestBreak = true;
+            mRestBreakTick = 0;
+            startBreak(breakType, mRestBreakDuration);
+            mTimerDialog->setRestBreakMaximum(0);
+        }
+        else if(mRestBreakTick == mRestBreakNotification)
+        {
+            const int secondsLeft = mRestBreakCycle - mRestBreakNotification;
+            notifyBreak(breakType, secondsLeft);
+        }
+    }
+
+    if(mInMicroBreak)
+    {
+        assert(!mInRestBreak);
+        mRestBreakTick -= 1;
+
+        mBreakDialog->setBreakProgress(mMicroBreakTick);
+        if(mMicroBreakTick == mMicroBreakDuration)
+        {
+            mInMicroBreak = false;
+            mMicroBreakTick = 0;
+            mBreakDialog->hide();
+            mTimerDialog->setMicroBreakMaximum(mMicroBreakCycle);
+        }
+    }
+    else
+    {
+        assert(mMicroBreakTick <= mMicroBreakCycle);
+
+        auto breakType = tr("Micro break");
+        mTimerDialog->setMicroBreakProgress(mMicroBreakTick);
+        if(mMicroBreakTick == mMicroBreakCycle)
+        {
+            mInMicroBreak = true;
+            mMicroBreakTick = 0;
+            startBreak(breakType, mMicroBreakDuration);
+            mTimerDialog->setMicroBreakMaximum(0);
+        }
+        else if(mMicroBreakTick == mMicroBreakNotification)
+        {
+            const int secondsUntilRestBreakNotification = mRestBreakNotification - mRestBreakTick;
+            const int secondsLeft = mMicroBreakCycle - mMicroBreakNotification;
+            if(secondsUntilRestBreakNotification > secondsLeft)
+            {
+                notifyBreak(breakType, secondsLeft);
+            }
         }
     }
 }

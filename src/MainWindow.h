@@ -37,5 +37,15 @@ private:
     BreakDialog* mBreakDialog = nullptr;
     QRect mTimerDialogGeometry;
     int mMicroBreakTick = 0;
-    bool mInBreak = false;
+    bool mInMicroBreak = false;
+    int mRestBreakTick = 0;
+    bool mInRestBreak = false;
+
+    int mMicroBreakCycle = 10;
+    int mMicroBreakNotification = mMicroBreakCycle - 5;
+    int mMicroBreakDuration = 15;
+
+    int mRestBreakCycle = 60;
+    int mRestBreakNotification = mRestBreakCycle - 20;
+    int mRestBreakDuration = 15;
 };

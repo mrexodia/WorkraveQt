@@ -23,6 +23,7 @@ QMAKE_TARGET_DESCRIPTION = "WorkraveQt"
 
 SOURCES += \
     BreakDialog.cpp \
+    Helpers.cpp \
     PreferencesDialog.cpp \
     QTrayDialog.cpp \
     TimerDialog.cpp \
@@ -31,6 +32,7 @@ SOURCES += \
 
 HEADERS += \
     BreakDialog.h \
+    Helpers.h \
     MainWindow.h \
     PreferencesDialog.h \
     QTrayDialog.h \

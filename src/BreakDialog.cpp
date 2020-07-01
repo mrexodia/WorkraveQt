@@ -1,5 +1,6 @@
 #include "BreakDialog.h"
 #include "ui_BreakDialog.h"
+#include "Helpers.h"
 
 BreakDialog::BreakDialog(QWidget* parent) :
     QTrayDialog(parent),
@@ -20,19 +21,12 @@ void BreakDialog::setBreakDuration(int breakDuration)
     ui->progressBarTimer->setMaximum(breakDuration);
     ui->progressBarTimer->reset();
     ui->progressBarTimer->update();
-    ui->labelTimer->setText(timeFormat(mBreakDuration));
+    ui->labelTimer->setText(Helpers::timeFormat(mBreakDuration));
 }
 
 void BreakDialog::setBreakProgress(int seconds)
 {
     ui->progressBarTimer->setValue(seconds);
     ui->progressBarTimer->update();
-    ui->labelTimer->setText(timeFormat(mBreakDuration - seconds));
-}
-
-QString BreakDialog::timeFormat(int seconds)
-{
-    auto minutes = seconds / 60;
-    seconds = seconds % 60;
-    return QString().sprintf("%d:%02d", minutes, seconds);
+    ui->labelTimer->setText(Helpers::timeFormat(mBreakDuration - seconds));
 }

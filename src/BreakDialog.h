@@ -19,7 +19,5 @@ public:
 private:
     Ui::BreakDialog* ui;
     int mBreakDuration = 0;
-
-    static QString timeFormat(int seconds);
 };
 
