@@ -13,6 +13,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 win32:VERSION = 0.1.0.0
 else:VERSION = 0.1.0
 
+win32:RC_ICONS = images/sheep.ico
+
 # https://stackoverflow.com/a/58434395/1806760
 QMAKE_TARGET_DESCRIPTION = "WorkraveQt"
 
