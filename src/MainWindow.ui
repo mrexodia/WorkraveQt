@@ -34,6 +34,7 @@
     <addaction name="actionOpen"/>
     <addaction name="actionBreak"/>
     <addaction name="actionPreferences"/>
+    <addaction name="actionPause"/>
     <addaction name="actionExit"/>
    </widget>
    <addaction name="menuTray"/>
@@ -56,6 +57,11 @@
   <action name="actionBreak">
    <property name="text">
     <string>&amp;Break</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="text">
+    <string>Pause</string>
    </property>
   </action>
  </widget>

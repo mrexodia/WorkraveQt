@@ -58,6 +58,9 @@ void MainWindow::trayIconActivatedSlot(QSystemTrayIcon::ActivationReason reason)
 
 void MainWindow::tickTimeoutSlot()
 {
+    if(mPaused)
+        return;
+
     mMicroBreakTick += 1;
     mRestBreakTick += 1;
     qDebug() << "mMicroBreakTick" << mMicroBreakTick << "mRestBreakTick" << mRestBreakTick;
@@ -180,4 +183,10 @@ void MainWindow::on_actionOpen_triggered()
 void MainWindow::on_actionBreak_triggered()
 {
     mBreakDialog->show();
+}
+
+void MainWindow::on_actionPause_triggered()
+{
+    mPaused = !mPaused;
+    ui->actionPause->setText(mPaused ? tr("Resume") : tr("Pause"));
 }

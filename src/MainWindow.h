@@ -27,6 +27,7 @@ private slots:
     void on_actionPreferences_triggered();
     void on_actionOpen_triggered();
     void on_actionBreak_triggered();
+    void on_actionPause_triggered();
 
 private:
     Ui::MainWindow* ui = nullptr;
@@ -48,4 +49,6 @@ private:
     int mRestBreakCycle = 60;
     int mRestBreakNotification = mRestBreakCycle - 20;
     int mRestBreakDuration = 15;
+
+    bool mPaused = false;
 };
