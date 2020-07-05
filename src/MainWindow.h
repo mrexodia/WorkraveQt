@@ -6,6 +6,7 @@
 #include "PreferencesDialog.h"
 #include "TimerDialog.h"
 #include "BreakDialog.h"
+#include "Configuration.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -42,13 +43,7 @@ private:
     int mRestBreakTick = 0;
     bool mInRestBreak = false;
 
-    int mMicroBreakCycle = 10;
-    int mMicroBreakNotification = mMicroBreakCycle - 5;
-    int mMicroBreakDuration = 15;
-
-    int mRestBreakCycle = 60;
-    int mRestBreakNotification = mRestBreakCycle - 20;
-    int mRestBreakDuration = 15;
+    Configuration mConfiguration;
 
     bool mPaused = false;
 };

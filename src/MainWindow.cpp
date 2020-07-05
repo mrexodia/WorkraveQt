@@ -11,10 +11,13 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , mTrayIcon(new QSystemTrayIcon(this))
-    , mPreferencesDialog(new PreferencesDialog(nullptr))
+    , mPreferencesDialog(new PreferencesDialog(&mConfiguration, nullptr))
     , mTimerDialog(new TimerDialog(this))
     , mBreakDialog(new BreakDialog(nullptr))
 {
+    mConfiguration.load();
+    mConfiguration.dump();
+
     ui->setupUi(this);
     mTrayIcon->setIcon(windowIcon());
     mTrayIcon->setContextMenu(ui->menuTray);
@@ -26,11 +29,11 @@ MainWindow::MainWindow(QWidget* parent)
     connect(mTickTimer, &QTimer::timeout, this, &MainWindow::tickTimeoutSlot);
     mTickTimer->start();
 
-    assert(mMicroBreakCycle > mMicroBreakNotification);
-    assert(mMicroBreakCycle - mMicroBreakNotification < mMicroBreakDuration);
+    assert(mConfiguration.mMicroBreakCycle > mConfiguration.mMicroBreakNotification);
+    //assert(mConfiguration.mMicroBreakCycle - mConfiguration.mMicroBreakNotification < mConfiguration.mMicroBreakDuration);
 
-    mTimerDialog->setMicroBreakMaximum(mMicroBreakCycle);
-    mTimerDialog->setRestBreakMaximum(mRestBreakCycle);
+    mTimerDialog->setMicroBreakMaximum(mConfiguration.mMicroBreakCycle);
+    mTimerDialog->setRestBreakMaximum(mConfiguration.mRestBreakCycle);
 }
 
 MainWindow::~MainWindow()
@@ -88,21 +91,21 @@ void MainWindow::tickTimeoutSlot()
         mMicroBreakTick -= 1;
 
         mBreakDialog->setBreakProgress(mRestBreakTick);
-        if(mRestBreakTick == mRestBreakDuration)
+        if(mRestBreakTick == mConfiguration.mRestBreakDuration)
         {
             mInRestBreak = false;
             mRestBreakTick = 0;
             mBreakDialog->hide();
-            mTimerDialog->setRestBreakMaximum(mRestBreakCycle);
-            mTimerDialog->setMicroBreakMaximum(mMicroBreakCycle);
+            mTimerDialog->setRestBreakMaximum(mConfiguration.mRestBreakCycle);
+            mTimerDialog->setMicroBreakMaximum(mConfiguration.mMicroBreakCycle);
         }
     }
     else
     {
-        assert(mRestBreakTick <= mRestBreakCycle);
+        assert(mRestBreakTick <= mConfiguration.mRestBreakCycle);
 
         // Once the rest break notification is shown, reset the micro break timer
-        if(mRestBreakTick >= mRestBreakNotification)
+        if(mRestBreakTick >= mConfiguration.mRestBreakNotification)
         {
             mMicroBreakTick = 0;
             mTimerDialog->setMicroBreakMaximum(0);
@@ -110,16 +113,16 @@ void MainWindow::tickTimeoutSlot()
 
         auto breakType = tr("Rest break");
         mTimerDialog->setRestBreakProgress(mRestBreakTick);
-        if(mRestBreakTick == mRestBreakCycle)
+        if(mRestBreakTick == mConfiguration.mRestBreakCycle)
         {
             mInRestBreak = true;
             mRestBreakTick = 0;
-            startBreak(breakType, mRestBreakDuration);
+            startBreak(breakType, mConfiguration.mRestBreakDuration);
             mTimerDialog->setRestBreakMaximum(0);
         }
-        else if(mRestBreakTick == mRestBreakNotification)
+        else if(mRestBreakTick == mConfiguration.mRestBreakNotification)
         {
-            const int secondsLeft = mRestBreakCycle - mRestBreakNotification;
+            const int secondsLeft = mConfiguration.mRestBreakCycle - mConfiguration.mRestBreakNotification;
             notifyBreak(breakType, secondsLeft);
         }
     }
@@ -130,31 +133,31 @@ void MainWindow::tickTimeoutSlot()
         mRestBreakTick -= 1;
 
         mBreakDialog->setBreakProgress(mMicroBreakTick);
-        if(mMicroBreakTick == mMicroBreakDuration)
+        if(mMicroBreakTick == mConfiguration.mMicroBreakDuration)
         {
             mInMicroBreak = false;
             mMicroBreakTick = 0;
             mBreakDialog->hide();
-            mTimerDialog->setMicroBreakMaximum(mMicroBreakCycle);
+            mTimerDialog->setMicroBreakMaximum(mConfiguration.mMicroBreakCycle);
         }
     }
     else
     {
-        assert(mMicroBreakTick <= mMicroBreakCycle);
+        assert(mMicroBreakTick <= mConfiguration.mMicroBreakCycle);
 
         auto breakType = tr("Micro break");
         mTimerDialog->setMicroBreakProgress(mMicroBreakTick);
-        if(mMicroBreakTick == mMicroBreakCycle)
+        if(mMicroBreakTick == mConfiguration.mMicroBreakCycle)
         {
             mInMicroBreak = true;
             mMicroBreakTick = 0;
-            startBreak(breakType, mMicroBreakDuration);
+            startBreak(breakType, mConfiguration.mMicroBreakDuration);
             mTimerDialog->setMicroBreakMaximum(0);
         }
-        else if(mMicroBreakTick == mMicroBreakNotification)
+        else if(mMicroBreakTick == mConfiguration.mMicroBreakNotification)
         {
-            const int secondsUntilRestBreakNotification = mRestBreakNotification - mRestBreakTick;
-            const int secondsLeft = mMicroBreakCycle - mMicroBreakNotification;
+            const int secondsUntilRestBreakNotification = mConfiguration.mRestBreakNotification - mRestBreakTick;
+            const int secondsLeft = mConfiguration.mMicroBreakCycle - mConfiguration.mMicroBreakNotification;
             if(secondsUntilRestBreakNotification > secondsLeft)
             {
                 notifyBreak(breakType, secondsLeft);
