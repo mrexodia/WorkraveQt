@@ -17,6 +17,8 @@ public:
     void setMicroBreakProgress(int microBreakValue);
     void setRestBreakMaximum(int restBreakMaximum);
     void setRestBreakProgress(int restBreakValue);
+    void setIdleMaximum(int idleMaximum);
+    void setIdleProgress(int idleValue);
 
 private:
     Ui::TimerDialog* ui;

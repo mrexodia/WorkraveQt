@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
+#include "Helpers.h"
 
 #include <QCloseEvent>
 #include <QEvent>
@@ -35,6 +36,7 @@ MainWindow::MainWindow(bool testConfiguration, QWidget* parent)
 
     mTimerDialog->setMicroBreakMaximum(mConfiguration.mMicroBreakCycle);
     mTimerDialog->setRestBreakMaximum(mConfiguration.mRestBreakCycle);
+    mTimerDialog->setIdleMaximum(mConfiguration.mMicroBreakDuration);
 }
 
 MainWindow::~MainWindow()
@@ -65,9 +67,63 @@ void MainWindow::tickTimeoutSlot()
     if(mPaused)
         return;
 
-    mMicroBreakTick += 1;
-    mRestBreakTick += 1;
-    qDebug() << "mMicroBreakTick" << mMicroBreakTick << "mRestBreakTick" << mRestBreakTick;
+    auto resetRestBreak = [this]()
+    {
+        mInRestBreak = false;
+        mRestBreakTick = 0;
+        mBreakDialog->hide();
+        mTimerDialog->setRestBreakMaximum(mConfiguration.mRestBreakCycle);
+        mTimerDialog->setMicroBreakMaximum(mConfiguration.mMicroBreakCycle);
+    };
+
+    auto resetMicroBreak = [this]()
+    {
+        mInMicroBreak = false;
+        mMicroBreakTick = 0;
+        mBreakDialog->hide();
+        mTimerDialog->setMicroBreakMaximum(mConfiguration.mMicroBreakCycle);
+    };
+
+    // TODO: move to settings?
+    constexpr int idleThreshold = 5;
+
+    auto idleTime = Helpers::getIdleTimeMs();
+    auto isIdle = idleTime > idleThreshold;
+
+    if(!mInRestBreak && !mInMicroBreak && isIdle)
+    {
+        // The user is idle, pause other timers
+        if(idleTime > mConfiguration.mMicroBreakDuration && mIdleMaximum != mConfiguration.mRestBreakDuration)
+        {
+            resetMicroBreak();
+            mIdleMaximum = mConfiguration.mRestBreakDuration;
+            mTimerDialog->setIdleMaximum(mIdleMaximum);
+        }
+        if(idleTime > mConfiguration.mRestBreakDuration && mIdleMaximum != 0)
+        {
+            resetRestBreak();
+            mIdleMaximum = 0;
+            mTimerDialog->setIdleMaximum(mIdleMaximum);
+        }
+    }
+    else
+    {
+        mMicroBreakTick += 1;
+        mRestBreakTick += 1;
+    }
+
+    if(idleTime <= idleThreshold)
+    {
+        mIdleMaximum = mConfiguration.mMicroBreakDuration;
+        mTimerDialog->setIdleMaximum(mIdleMaximum);
+    }
+
+    if(mIdleMaximum != 0 && !mInMicroBreak && !mInRestBreak)
+    {
+        mTimerDialog->setIdleProgress(idleTime);
+    }
+
+    qDebug() << "mMicroBreakTick" << mMicroBreakTick << "mRestBreakTick" << mRestBreakTick << "idleTime" << idleTime;
 
     auto startBreak = [this](const QString& type, int duration)
     {
@@ -94,11 +150,7 @@ void MainWindow::tickTimeoutSlot()
         mBreakDialog->setBreakProgress(mRestBreakTick);
         if(mRestBreakTick == mConfiguration.mRestBreakDuration)
         {
-            mInRestBreak = false;
-            mRestBreakTick = 0;
-            mBreakDialog->hide();
-            mTimerDialog->setRestBreakMaximum(mConfiguration.mRestBreakCycle);
-            mTimerDialog->setMicroBreakMaximum(mConfiguration.mMicroBreakCycle);
+            resetRestBreak();
         }
     }
     else
@@ -121,7 +173,7 @@ void MainWindow::tickTimeoutSlot()
             startBreak(breakType, mConfiguration.mRestBreakDuration);
             mTimerDialog->setRestBreakMaximum(0);
         }
-        else if(mRestBreakTick == mConfiguration.mRestBreakNotification)
+        else if(mRestBreakTick == mConfiguration.mRestBreakNotification && !isIdle)
         {
             const int secondsLeft = mConfiguration.mRestBreakCycle - mConfiguration.mRestBreakNotification;
             notifyBreak(breakType, secondsLeft);
@@ -136,10 +188,7 @@ void MainWindow::tickTimeoutSlot()
         mBreakDialog->setBreakProgress(mMicroBreakTick);
         if(mMicroBreakTick == mConfiguration.mMicroBreakDuration)
         {
-            mInMicroBreak = false;
-            mMicroBreakTick = 0;
-            mBreakDialog->hide();
-            mTimerDialog->setMicroBreakMaximum(mConfiguration.mMicroBreakCycle);
+            resetMicroBreak();
         }
     }
     else
@@ -155,7 +204,7 @@ void MainWindow::tickTimeoutSlot()
             startBreak(breakType, mConfiguration.mMicroBreakDuration);
             mTimerDialog->setMicroBreakMaximum(0);
         }
-        else if(mMicroBreakTick == mConfiguration.mMicroBreakNotification)
+        else if(mMicroBreakTick == mConfiguration.mMicroBreakNotification && !isIdle)
         {
             const int secondsUntilRestBreakNotification = mConfiguration.mRestBreakNotification - mRestBreakTick;
             const int secondsLeft = mConfiguration.mMicroBreakCycle - mConfiguration.mMicroBreakNotification;

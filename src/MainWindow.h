@@ -42,6 +42,7 @@ private:
     bool mInMicroBreak = false;
     int mRestBreakTick = 0;
     bool mInRestBreak = false;
+    int mIdleMaximum = 0;
 
     Configuration mConfiguration;
 

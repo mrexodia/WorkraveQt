@@ -43,3 +43,14 @@ void TimerDialog::setRestBreakProgress(int restBreakValue)
 {
     setTimerProgress(ui->progressBarRestBreak, ui->labelRestBreakTimer, restBreakValue);
 }
+
+void TimerDialog::setIdleMaximum(int idleMaximum)
+{
+    ui->progressBarIdle->setMaximum(idleMaximum);
+    setIdleProgress(0);
+}
+
+void TimerDialog::setIdleProgress(int idleValue)
+{
+    setTimerProgress(ui->progressBarIdle, ui->labelIdleTimer, idleValue);
+}
