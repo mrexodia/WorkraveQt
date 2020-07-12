@@ -108,8 +108,15 @@ void MainWindow::tickTimeoutSlot()
     }
     else
     {
-        mMicroBreakTick += 1;
-        mRestBreakTick += 1;
+        if(mInRestBreak || mInMicroBreak && idleTime == 0)
+        {
+            // When in break and not idle, don't continue the break
+        }
+        else
+        {
+            mMicroBreakTick += 1;
+            mRestBreakTick += 1;
+        }
     }
 
     if(idleTime <= idleThreshold)
