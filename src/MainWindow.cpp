@@ -7,7 +7,7 @@
 #include <QTimer>
 #include <QDebug>
 
-MainWindow::MainWindow(QWidget* parent)
+MainWindow::MainWindow(bool testConfiguration, QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , mTrayIcon(new QSystemTrayIcon(this))
@@ -15,7 +15,8 @@ MainWindow::MainWindow(QWidget* parent)
     , mTimerDialog(new TimerDialog(this))
     , mBreakDialog(new BreakDialog(nullptr))
 {
-    mConfiguration.load();
+    if(!testConfiguration)
+        mConfiguration.load();
     mConfiguration.dump();
 
     ui->setupUi(this);

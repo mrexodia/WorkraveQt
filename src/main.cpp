@@ -10,6 +10,12 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("WorkraveQt");
     QCoreApplication::setOrganizationDomain("workraveqt.io");
     QCoreApplication::setApplicationName("WorkraveQt");
-    MainWindow w;
+    bool testConfiguration = false;
+    for(int i = 1; i < argc; i++)
+    {
+        if(strcmp(argv[i], "--testConfiguration") == 0)
+            testConfiguration = true;
+    }
+    MainWindow w(testConfiguration);
     return a.exec();
 }

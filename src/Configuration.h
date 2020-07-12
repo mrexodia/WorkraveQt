@@ -8,7 +8,7 @@ struct Configuration
 
     int mRestBreakCycle = 60;
     int mRestBreakNotification = mRestBreakCycle - 20;
-    int mRestBreakDuration = 15;
+    int mRestBreakDuration = 20;
 
     void load();
     void save();
