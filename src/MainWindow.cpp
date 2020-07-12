@@ -46,7 +46,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::trayIconActivatedSlot(QSystemTrayIcon::ActivationReason reason)
 {
-    if(reason == QSystemTrayIcon::DoubleClick)
+    if(reason == QSystemTrayIcon::Trigger)
     {
         if(mTimerDialog->isVisible())
         {
