@@ -32,6 +32,7 @@ static int getIdleTimeImpl()
     }
     return (int)current_idle_time;
 }
+
 #else
 
 static int getIdleTimeImpl()

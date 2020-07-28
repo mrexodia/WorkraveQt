@@ -15,6 +15,10 @@ public:
     ~BreakDialog();
     void setBreakDuration(int breakDuration);
     void setBreakProgress(int seconds);
+    void setForceClose();
+
+protected:
+    void closeEvent(QCloseEvent* event) override;
 
 private slots:
     void on_pushButtonLock_clicked();
@@ -22,5 +26,6 @@ private slots:
 private:
     Ui::BreakDialog* ui;
     int mBreakDuration = 0;
+    bool mForceClose = false;
 };
 

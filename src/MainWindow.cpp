@@ -72,6 +72,7 @@ void MainWindow::tickTimeoutSlot()
         mInRestBreak = false;
         mRestBreakTick = 0;
         mBreakDialog->hide();
+        setBlocked(false);
         mTimerDialog->setRestBreakMaximum(mConfiguration.mRestBreakCycle);
         mTimerDialog->setMicroBreakMaximum(mConfiguration.mMicroBreakCycle);
     };
@@ -81,6 +82,7 @@ void MainWindow::tickTimeoutSlot()
         mInMicroBreak = false;
         mMicroBreakTick = 0;
         mBreakDialog->hide();
+        setBlocked(false);
         mTimerDialog->setMicroBreakMaximum(mConfiguration.mMicroBreakCycle);
     };
 
@@ -130,8 +132,10 @@ void MainWindow::tickTimeoutSlot()
         mBreakDialog->setBreakDuration(duration);
         mBreakDialog->setWindowTitle(type);
         mBreakDialog->show();
-        mBreakDialog->activateWindow();
-        mBreakDialog->setFocus();
+        mBreakDialog->setWindowFlag(Qt::WindowStaysOnTopHint);
+        mBreakDialog->showFullScreen();
+        mBreakDialog->move(0, 0);
+        setBlocked(true);
     };
 
     auto notifyBreak = [this](const QString& type, int secondsLeft)
@@ -218,7 +222,10 @@ void MainWindow::tickTimeoutSlot()
 
 void MainWindow::on_actionExit_triggered()
 {
+    if(mBlocked-- > 0)
+        return;
     mTimerDialog->close();
+    mBreakDialog->setForceClose();
     mBreakDialog->close();
     close();
 }
@@ -242,4 +249,9 @@ void MainWindow::on_actionPause_triggered()
 {
     mPaused = !mPaused;
     ui->actionPause->setText(mPaused ? tr("Resume") : tr("Pause"));
+}
+
+void MainWindow::setBlocked(bool blocked)
+{
+    mBlocked = blocked ? 10 : 0;
 }

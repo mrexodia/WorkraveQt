@@ -3,6 +3,7 @@
 #include "Helpers.h"
 
 #include <QMessageBox>
+#include <QCloseEvent>
 
 BreakDialog::BreakDialog(QWidget* parent) :
     QTrayDialog(parent),
@@ -33,7 +34,21 @@ void BreakDialog::setBreakProgress(int seconds)
     ui->labelTimer->setText(Helpers::timeFormat(mBreakDuration - seconds));
 }
 
+void BreakDialog::setForceClose()
+{
+    mForceClose = true;
+}
+
+void BreakDialog::closeEvent(QCloseEvent* event)
+{
+    if(mForceClose)
+        return QDialog::closeEvent(event);
+    // Ignore close
+    event->ignore();
+}
+
 void BreakDialog::on_pushButtonLock_clicked()
 {
     QMessageBox::information(this, "TODO", "Not yet implemented!");
 }
+

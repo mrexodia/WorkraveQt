@@ -31,6 +31,9 @@ private slots:
     void on_actionPause_triggered();
 
 private:
+    void setBlocked(bool blocked);
+
+private:
     Ui::MainWindow* ui = nullptr;
     QSystemTrayIcon* mTrayIcon = nullptr;
     QTimer* mTickTimer = nullptr;
@@ -47,4 +50,5 @@ private:
     Configuration mConfiguration;
 
     bool mPaused = false;
+    int mBlocked = 0;
 };
