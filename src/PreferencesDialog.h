@@ -17,12 +17,11 @@ public:
 
 protected:
     void showEvent(QShowEvent* event) override;
-
-private slots:
-    void on_buttonBox_accepted();
+    void accept() override;
 
 private:
     Ui::PreferencesDialog* ui;
     Configuration* mConfiguration;
+    bool mStartupChecked = false;
 };
 

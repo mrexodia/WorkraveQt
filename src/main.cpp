@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     setvbuf(stderr, nullptr, _IONBF, 0);
     QApplication a(argc, argv);
     QCoreApplication::setOrganizationName("WorkraveQt");
-    QCoreApplication::setOrganizationDomain("workraveqt.io");
+    QCoreApplication::setOrganizationDomain("workrave.io");
     QCoreApplication::setApplicationName("WorkraveQt");
     bool testConfiguration = false;
     for(int i = 1; i < argc; i++)
@@ -17,5 +17,6 @@ int main(int argc, char *argv[])
             testConfiguration = true;
     }
     MainWindow w(testConfiguration);
+    Q_UNUSED(w);
     return a.exec();
 }

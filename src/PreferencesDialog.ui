@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>332</width>
-    <height>166</height>
+    <width>304</width>
+    <height>219</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,87 +19,75 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_7">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QGroupBox" name="groupBoxMicroBreak">
+      <widget class="QGroupBox" name="groupBox">
        <property name="title">
         <string>Micro break</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QLabel" name="labelMicroBreakDuration">
-            <property name="text">
-             <string>Duration:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBoxMicroBreakDuration">
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QLabel" name="labelMicroBreakDuration">
+          <property name="text">
+           <string>Duration:</string>
+          </property>
+         </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QLabel" name="labelMicroBreakCycle">
-            <property name="text">
-             <string>Cycle:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBoxMicroBreakCycle">
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QLineEdit" name="lineEditMicroBreakDuration">
+          <property name="inputMask">
+           <string>99\h99m99s</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="placeholderText">
+           <string>micro break duration</string>
+          </property>
+         </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <widget class="QLabel" name="labelMicroBreakNotification">
-            <property name="text">
-             <string>Notification:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBoxMicroBreakNotification">
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QLabel" name="labelMicroBreakCycle">
+          <property name="text">
+           <string>Cycle:</string>
+          </property>
+         </widget>
         </item>
         <item>
-         <spacer name="verticalSpacer">
+         <widget class="QLineEdit" name="lineEditMicroBreakCycle">
+          <property name="inputMask">
+           <string>99\h99m99s</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="placeholderText">
+           <string>micro break cycle</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelMicroBreakNotification">
+          <property name="text">
+           <string>Notification:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEditMicroBreakNotification">
+          <property name="inputMask">
+           <string>99\h99m99s</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="placeholderText">
+           <string>micro break notification</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacerMicroBreak">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
@@ -115,85 +103,73 @@
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="groupBoxRestBreak">
+      <widget class="QGroupBox" name="groupBox_2">
        <property name="title">
         <string>Rest break</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <item>
-           <widget class="QLabel" name="labelRestBreakDuration">
-            <property name="text">
-             <string>Duration:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBoxRestBreakDuration">
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QLabel" name="labelRestBreakDuration">
+          <property name="text">
+           <string>Duration:</string>
+          </property>
+         </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
-          <item>
-           <widget class="QLabel" name="labelRestBreakCycle">
-            <property name="text">
-             <string>Cycle:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBoxRestBreakCycle">
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QLineEdit" name="lineEditRestBreakDuration">
+          <property name="inputMask">
+           <string>99\h99m99s</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="placeholderText">
+           <string>rest break duration</string>
+          </property>
+         </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <item>
-           <widget class="QLabel" name="labelRestBreakNotification">
-            <property name="text">
-             <string>Notification:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBoxRestBreakNotification">
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QLabel" name="labelRestBreakCycle">
+          <property name="text">
+           <string>Cycle:</string>
+          </property>
+         </widget>
         </item>
         <item>
-         <spacer name="verticalSpacer_2">
+         <widget class="QLineEdit" name="lineEditRestBreakCycle">
+          <property name="inputMask">
+           <string>99\h99m99s</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="placeholderText">
+           <string>rest break cycle</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelRestBreakNotification">
+          <property name="text">
+           <string>Notification:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEditRestBreakNotification">
+          <property name="inputMask">
+           <string>99\h99m99s</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="placeholderText">
+           <string>rest break notification</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacerRestBreak">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
@@ -211,14 +187,38 @@
     </layout>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_8">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBoxStartup">
+       <property name="text">
+        <string>&amp;Start with Windows</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
