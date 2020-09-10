@@ -2,13 +2,13 @@
 
 struct Configuration
 {
-    int mMicroBreakCycle = 10;
-    int mMicroBreakNotification = mMicroBreakCycle - 5;
-    int mMicroBreakDuration = 15;
+    int mMicroBreakCycle = 15 * 60;
+    int mMicroBreakNotification = mMicroBreakCycle - 60;
+    int mMicroBreakDuration = 45;
 
-    int mRestBreakCycle = 60;
-    int mRestBreakNotification = mRestBreakCycle - 20;
-    int mRestBreakDuration = 20;
+    int mRestBreakCycle = 45 * 60;
+    int mRestBreakNotification = mRestBreakCycle - 60;
+    int mRestBreakDuration = 7 * 60 + 30;
 
     void load();
     void save();
