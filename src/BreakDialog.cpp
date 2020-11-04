@@ -47,6 +47,14 @@ void BreakDialog::closeEvent(QCloseEvent* event)
     event->ignore();
 }
 
+void BreakDialog::keyPressEvent(QKeyEvent* event)
+{
+    if(event->key() == Qt::Key_Escape)
+        event->ignore();
+    else
+        QDialog::keyPressEvent(event);
+}
+
 void BreakDialog::on_pushButtonLock_clicked()
 {
     QMessageBox::information(this, "TODO", "Not yet implemented!");
