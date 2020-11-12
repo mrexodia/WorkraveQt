@@ -9,6 +9,8 @@ PreferencesDialog::PreferencesDialog(Configuration* configuration, QWidget* pare
     mConfiguration(configuration)
 {
     ui->setupUi(this);
+	setWindowFlag(Qt::WindowFullscreenButtonHint, false);
+	setFixedSize(size());
 
 #if !defined(Q_OS_WIN)
     ui->checkBoxStartup->setEnabled(false);

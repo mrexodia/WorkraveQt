@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>164</width>
-    <height>99</height>
+    <width>171</width>
+    <height>104</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,12 +33,12 @@
       <widget class="QLabel" name="labelMicroBreakTimer">
        <property name="minimumSize">
         <size>
-         <width>30</width>
+         <width>40</width>
          <height>0</height>
         </size>
        </property>
        <property name="text">
-        <string>0:60</string>
+        <string>00:60</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -66,12 +66,12 @@
       <widget class="QLabel" name="labelRestBreakTimer">
        <property name="minimumSize">
         <size>
-         <width>30</width>
+         <width>40</width>
          <height>0</height>
         </size>
        </property>
        <property name="text">
-        <string>0:60</string>
+        <string>00:60</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -99,12 +99,12 @@
       <widget class="QLabel" name="labelIdleTimer">
        <property name="minimumSize">
         <size>
-         <width>30</width>
+         <width>40</width>
          <height>0</height>
         </size>
        </property>
        <property name="text">
-        <string>0:60</string>
+        <string>00:60</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

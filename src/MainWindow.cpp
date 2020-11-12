@@ -27,7 +27,7 @@ MainWindow::MainWindow(bool testConfiguration, QWidget* parent)
         mConfiguration.mRestBreakDuration = 20;
     }
     else
-    {
+	{
         mConfiguration.load();
     }
     mConfiguration.dump();
@@ -58,6 +58,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::trayIconActivatedSlot(QSystemTrayIcon::ActivationReason reason)
 {
+#if Q_OS_WIN
     if(reason == QSystemTrayIcon::Trigger)
     {
         if(mTimerDialog->isVisible())
@@ -69,6 +70,9 @@ void MainWindow::trayIconActivatedSlot(QSystemTrayIcon::ActivationReason reason)
             mTimerDialog->setVisible(true);
         }
     }
+#else
+	Q_UNUSED(reason);
+#endif // Q_OS_WIN
 }
 
 void MainWindow::tickTimeoutSlot()
@@ -231,6 +235,7 @@ void MainWindow::on_actionExit_triggered()
 {
     if(mBlocked-- > 0)
         return;
+	mTimerDialog->setForceClose();
     mTimerDialog->close();
     mBreakDialog->setForceClose();
     mBreakDialog->close();
@@ -249,7 +254,7 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_actionBreak_triggered()
 {
-    mBreakDialog->show();
+	mBreakDialog->showMaximized();
 }
 
 void MainWindow::on_actionPause_triggered()

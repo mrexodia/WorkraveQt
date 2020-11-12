@@ -3,16 +3,19 @@
 #include "Helpers.h"
 
 #include <QSettings>
+#include <QCloseEvent>
 
 TimerDialog::TimerDialog(QWidget* parent) :
     QTrayDialog(parent),
     ui(new Ui::TimerDialog)
 {
-    setWindowFlag(Qt::WindowStaysOnTopHint);
     ui->setupUi(this);
+	setWindowFlag(Qt::WindowStaysOnTopHint);
+	setWindowFlag(Qt::WindowFullscreenButtonHint, false);
+	setFixedSize(size());
 
     QSettings settings;
-    restoreGeometry(settings.value("TimerDialog/geometry").toByteArray());
+	restoreGeometry(settings.value("TimerDialog/geometry").toByteArray());
     if(settings.value("TimerDialog/visible").toBool())
         setVisible(true);
 }
@@ -59,7 +62,12 @@ void TimerDialog::setIdleMaximum(int idleMaximum)
 
 void TimerDialog::setIdleProgress(int idleValue)
 {
-    setTimerProgress(ui->progressBarIdle, ui->labelIdleTimer, idleValue);
+	setTimerProgress(ui->progressBarIdle, ui->labelIdleTimer, idleValue);
+}
+
+void TimerDialog::setForceClose()
+{
+	mForceClose = true;
 }
 
 void TimerDialog::closeEvent(QCloseEvent* event)
@@ -67,5 +75,13 @@ void TimerDialog::closeEvent(QCloseEvent* event)
     QSettings settings;
     settings.setValue("TimerDialog/geometry", saveGeometry());
     settings.setValue("TimerDialog/visible", isVisible());
-    QDialog::closeEvent(event);
+	if(mForceClose)
+	{
+		QDialog::closeEvent(event);
+	}
+	else
+	{
+		event->ignore();
+		hide();
+	}
 }

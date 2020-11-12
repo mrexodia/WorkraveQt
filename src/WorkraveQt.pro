@@ -15,6 +15,11 @@ else:VERSION = 0.1.0
 
 win32:RC_ICONS = images/sheep.ico
 
+macx {
+    ICON = images/sheep.icns
+    QMAKE_INFO_PLIST = Info.plist
+}
+
 # https://stackoverflow.com/a/58434395/1806760
 QMAKE_TARGET_DESCRIPTION = "WorkraveQt"
 

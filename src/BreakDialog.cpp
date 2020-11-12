@@ -7,78 +7,79 @@
 #include <QTimer>
 
 BreakDialog::BreakDialog(QWidget* parent) :
-    QTrayDialog(parent),
-    ui(new Ui::BreakDialog)
+	QTrayDialog(parent),
+	ui(new Ui::BreakDialog)
 {
-    setWindowFlag(Qt::WindowStaysOnTopHint);
-    setWindowFlag(Qt::FramelessWindowHint);
-    ui->setupUi(this);
+	ui->setupUi(this);
+	setWindowFlag(Qt::WindowStaysOnTopHint);
+	setWindowFlag(Qt::FramelessWindowHint);
+	setWindowFlag(Qt::WindowFullscreenButtonHint, false);
 }
 
 BreakDialog::~BreakDialog()
 {
-    delete ui;
+	delete ui;
 }
 
 void BreakDialog::setBreakDuration(int breakDuration)
 {
-    mBreakDuration = breakDuration;
-    ui->progressBarTimer->setMaximum(breakDuration);
-    ui->progressBarTimer->reset();
-    ui->progressBarTimer->update();
-    ui->labelTimer->setText(Helpers::timeFormat(mBreakDuration));
+	mBreakDuration = breakDuration;
+	ui->progressBarTimer->setMaximum(breakDuration);
+	ui->progressBarTimer->reset();
+	ui->progressBarTimer->update();
+	ui->labelTimer->setText(Helpers::timeFormat(mBreakDuration));
 }
 
 void BreakDialog::setBreakProgress(int seconds)
 {
-    ui->progressBarTimer->setValue(seconds);
-    ui->progressBarTimer->update();
-    ui->labelTimer->setText(Helpers::timeFormat(mBreakDuration - seconds));
+	ui->progressBarTimer->setValue(seconds);
+	ui->progressBarTimer->update();
+	ui->labelTimer->setText(Helpers::timeFormat(mBreakDuration - seconds));
 }
 
 void BreakDialog::setForceClose()
 {
-    mForceClose = true;
+	mForceClose = true;
 }
 
 void BreakDialog::closeEvent(QCloseEvent* event)
 {
-    if(mForceClose)
-        return QDialog::closeEvent(event);
-    // Ignore close
-    event->ignore();
+	if(mForceClose)
+		return QDialog::closeEvent(event);
+	// Ignore close
+	event->ignore();
 }
 
 void BreakDialog::keyPressEvent(QKeyEvent* event)
 {
-    if(event->key() == Qt::Key_Escape)
-        event->ignore();
-    else
-        QDialog::keyPressEvent(event);
+	if(event->key() == Qt::Key_Escape)
+		event->ignore();
+	else
+		QDialog::keyPressEvent(event);
 }
 
 void BreakDialog::moveEvent(QMoveEvent* event)
 {
-    if(mFixedPos != QPoint(-1, -1) && event->pos() != mFixedPos)
-    {
-        QTimer::singleShot(0, [this]
-        {
-            move(mFixedPos);
-        });
-    }
-    QDialog::moveEvent(event);
+	if(mFixedPos != QPoint(-1, -1) && event->pos() != mFixedPos)
+	{
+		QTimer::singleShot(0, [this]
+		{
+			move(mFixedPos);
+		});
+	}
+	QDialog::moveEvent(event);
 }
 
 void BreakDialog::showEvent(QShowEvent* event)
 {
-    mFixedPos = pos();
-    QDialog::showEvent(event);
+	mFixedPos = pos();
+	QDialog::showEvent(event);
 }
 
 void BreakDialog::hideEvent(QHideEvent* event)
 {
-    mFixedPos = QPoint(-1, -1);
-    QDialog::hideEvent(event);
+	mFixedPos = QPoint(-1, -1);
+	QDialog::hideEvent(event);
 }
 
 #ifdef Q_OS_WIN
@@ -88,9 +89,9 @@ void BreakDialog::hideEvent(QHideEvent* event)
 void BreakDialog::on_pushButtonLock_clicked()
 {
 #ifdef Q_OS_WIN
-    LockWorkStation();
+	LockWorkStation();
 #else
-    QMessageBox::information(this, "TODO", "Not yet implemented!");
+	QMessageBox::information(this, "TODO", "Not yet implemented!");
 #endif // Q_OS_WIN
 }
 
