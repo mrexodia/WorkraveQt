@@ -33,6 +33,8 @@ SOURCES += \
     Configuration.cpp \
     Helpers.cpp \
     PreferencesDialog.cpp \
+    ProcessDialog.cpp \
+    ProcessListThread.cpp \
     QTrayDialog.cpp \
     TimerDialog.cpp \
     main.cpp \
@@ -44,6 +46,8 @@ HEADERS += \
     Helpers.h \
     MainWindow.h \
     PreferencesDialog.h \
+    ProcessDialog.h \
+    ProcessListThread.h \
     QTrayDialog.h \
     TimerDialog.h
 
@@ -51,6 +55,7 @@ FORMS += \
     BreakDialog.ui \
     MainWindow.ui \
     PreferencesDialog.ui \
+    ProcessDialog.ui \
     TimerDialog.ui
 
 win32:LIBS += -luser32

@@ -6,6 +6,7 @@
 #include "PreferencesDialog.h"
 #include "TimerDialog.h"
 #include "BreakDialog.h"
+#include "ProcessDialog.h"
 #include "Configuration.h"
 
 QT_BEGIN_NAMESPACE
@@ -30,6 +31,8 @@ private slots:
     void on_actionBreak_triggered();
     void on_actionPause_triggered();
 
+    void on_action_Game_whitelist_triggered();
+
 private:
     void setBlocked(bool blocked);
 
@@ -40,6 +43,7 @@ private:
     PreferencesDialog* mPreferencesDialog = nullptr;
     TimerDialog* mTimerDialog = nullptr;
     BreakDialog* mBreakDialog = nullptr;
+    ProcessDialog* mProcessDialog = nullptr;
     int mMicroBreakTick = 0;
     bool mInMicroBreak = false;
     int mRestBreakTick = 0;

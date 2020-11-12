@@ -34,6 +34,7 @@
     <addaction name="actionOpen"/>
     <addaction name="actionBreak"/>
     <addaction name="actionPreferences"/>
+    <addaction name="action_Game_whitelist"/>
     <addaction name="actionPause"/>
     <addaction name="actionExit"/>
    </widget>
@@ -62,6 +63,11 @@
   <action name="actionPause">
    <property name="text">
     <string>Pause</string>
+   </property>
+  </action>
+  <action name="action_Game_whitelist">
+   <property name="text">
+    <string>&amp;Game list</string>
    </property>
   </action>
  </widget>

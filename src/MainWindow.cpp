@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "Helpers.h"
+#include "ProcessDialog.h"
 
 #include <QCloseEvent>
 #include <QEvent>
@@ -15,6 +16,7 @@ MainWindow::MainWindow(bool testConfiguration, QWidget* parent)
     , mPreferencesDialog(new PreferencesDialog(&mConfiguration, nullptr))
     , mTimerDialog(new TimerDialog(this))
     , mBreakDialog(new BreakDialog(nullptr))
+    , mProcessDialog(new ProcessDialog(this))
 {
     if(testConfiguration)
     {
@@ -58,7 +60,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::trayIconActivatedSlot(QSystemTrayIcon::ActivationReason reason)
 {
-#if Q_OS_WIN
+#ifdef Q_OS_WIN
     if(reason == QSystemTrayIcon::Trigger)
     {
         if(mTimerDialog->isVisible())
@@ -77,7 +79,7 @@ void MainWindow::trayIconActivatedSlot(QSystemTrayIcon::ActivationReason reason)
 
 void MainWindow::tickTimeoutSlot()
 {
-    if(mPaused)
+    if(mPaused || mProcessDialog->isGameRunning())
         return;
 
     auto resetRestBreak = [this]()
@@ -235,10 +237,11 @@ void MainWindow::on_actionExit_triggered()
 {
     if(mBlocked-- > 0)
         return;
-	mTimerDialog->setForceClose();
     mTimerDialog->close();
     mBreakDialog->setForceClose();
     mBreakDialog->close();
+    mProcessDialog->setForceClose();
+    mProcessDialog->close();
     close();
 }
 
@@ -266,4 +269,9 @@ void MainWindow::on_actionPause_triggered()
 void MainWindow::setBlocked(bool blocked)
 {
     mBlocked = blocked ? 10 : 0;
+}
+
+void MainWindow::on_action_Game_whitelist_triggered()
+{
+    mProcessDialog->show();
 }

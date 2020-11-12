@@ -65,23 +65,10 @@ void TimerDialog::setIdleProgress(int idleValue)
 	setTimerProgress(ui->progressBarIdle, ui->labelIdleTimer, idleValue);
 }
 
-void TimerDialog::setForceClose()
-{
-	mForceClose = true;
-}
-
 void TimerDialog::closeEvent(QCloseEvent* event)
 {
     QSettings settings;
     settings.setValue("TimerDialog/geometry", saveGeometry());
     settings.setValue("TimerDialog/visible", isVisible());
-	if(mForceClose)
-	{
-		QDialog::closeEvent(event);
-	}
-	else
-	{
-		event->ignore();
-		hide();
-	}
+    QTrayDialog::closeEvent(event);
 }

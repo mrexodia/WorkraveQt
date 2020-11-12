@@ -19,7 +19,6 @@ public:
     void setRestBreakProgress(int restBreakValue);
     void setIdleMaximum(int idleMaximum);
     void setIdleProgress(int idleValue);
-	void setForceClose();
 
 protected:
     void closeEvent(QCloseEvent* event) override;
