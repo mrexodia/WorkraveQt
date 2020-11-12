@@ -10,6 +10,7 @@ PreferencesDialog::PreferencesDialog(Configuration* configuration, QWidget* pare
 {
     ui->setupUi(this);
 	setWindowFlag(Qt::WindowFullscreenButtonHint, false);
+	setWindowFlag(Qt::WindowStaysOnTopHint);
 	setFixedSize(size());
 
 #if !defined(Q_OS_WIN)
