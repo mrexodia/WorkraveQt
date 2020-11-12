@@ -40,7 +40,6 @@ private:
     PreferencesDialog* mPreferencesDialog = nullptr;
     TimerDialog* mTimerDialog = nullptr;
     BreakDialog* mBreakDialog = nullptr;
-    QRect mTimerDialogGeometry;
     int mMicroBreakTick = 0;
     bool mInMicroBreak = false;
     int mRestBreakTick = 0;

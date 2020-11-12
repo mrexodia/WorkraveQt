@@ -20,6 +20,9 @@ public:
     void setIdleMaximum(int idleMaximum);
     void setIdleProgress(int idleValue);
 
+protected:
+    void closeEvent(QCloseEvent* event) override;
+
 private:
     Ui::TimerDialog* ui;
 };

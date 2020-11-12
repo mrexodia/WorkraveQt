@@ -2,12 +2,19 @@
 #include "ui_TimerDialog.h"
 #include "Helpers.h"
 
+#include <QSettings>
+
 TimerDialog::TimerDialog(QWidget* parent) :
     QTrayDialog(parent),
     ui(new Ui::TimerDialog)
 {
     setWindowFlag(Qt::WindowStaysOnTopHint);
     ui->setupUi(this);
+
+    QSettings settings;
+    restoreGeometry(settings.value("TimerDialog/geometry").toByteArray());
+    if(settings.value("TimerDialog/visible").toBool())
+        setVisible(true);
 }
 
 TimerDialog::~TimerDialog()
@@ -53,4 +60,12 @@ void TimerDialog::setIdleMaximum(int idleMaximum)
 void TimerDialog::setIdleProgress(int idleValue)
 {
     setTimerProgress(ui->progressBarIdle, ui->labelIdleTimer, idleValue);
+}
+
+void TimerDialog::closeEvent(QCloseEvent* event)
+{
+    QSettings settings;
+    settings.setValue("TimerDialog/geometry", saveGeometry());
+    settings.setValue("TimerDialog/visible", isVisible());
+    QDialog::closeEvent(event);
 }

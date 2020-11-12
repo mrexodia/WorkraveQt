@@ -62,13 +62,10 @@ void MainWindow::trayIconActivatedSlot(QSystemTrayIcon::ActivationReason reason)
     {
         if(mTimerDialog->isVisible())
         {
-            mTimerDialogGeometry = mTimerDialog->geometry();
             mTimerDialog->setVisible(false);
         }
         else
         {
-            if(!mTimerDialogGeometry.isNull())
-                mTimerDialog->setGeometry(mTimerDialogGeometry);
             mTimerDialog->setVisible(true);
         }
     }
