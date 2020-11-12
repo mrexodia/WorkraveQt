@@ -143,10 +143,8 @@ void MainWindow::tickTimeoutSlot()
     {
         mBreakDialog->setBreakDuration(duration);
         mBreakDialog->setWindowTitle(type);
-        mBreakDialog->show();
-        mBreakDialog->setWindowFlag(Qt::WindowStaysOnTopHint);
-        mBreakDialog->showFullScreen();
         mBreakDialog->move(0, 0);
+        mBreakDialog->showMaximized();
         setBlocked(true);
     };
 

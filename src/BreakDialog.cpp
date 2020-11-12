@@ -4,12 +4,14 @@
 
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QTimer>
 
 BreakDialog::BreakDialog(QWidget* parent) :
     QTrayDialog(parent),
     ui(new Ui::BreakDialog)
 {
     setWindowFlag(Qt::WindowStaysOnTopHint);
+    setWindowFlag(Qt::FramelessWindowHint);
     ui->setupUi(this);
 }
 
@@ -55,8 +57,40 @@ void BreakDialog::keyPressEvent(QKeyEvent* event)
         QDialog::keyPressEvent(event);
 }
 
+void BreakDialog::moveEvent(QMoveEvent* event)
+{
+    if(mFixedPos != QPoint(-1, -1) && event->pos() != mFixedPos)
+    {
+        QTimer::singleShot(0, [this]
+        {
+            move(mFixedPos);
+        });
+    }
+    QDialog::moveEvent(event);
+}
+
+void BreakDialog::showEvent(QShowEvent* event)
+{
+    mFixedPos = pos();
+    QDialog::showEvent(event);
+}
+
+void BreakDialog::hideEvent(QHideEvent* event)
+{
+    mFixedPos = QPoint(-1, -1);
+    QDialog::hideEvent(event);
+}
+
+#ifdef Q_OS_WIN
+#include <Windows.h>
+#endif // Q_OS_WIN
+
 void BreakDialog::on_pushButtonLock_clicked()
 {
+#ifdef Q_OS_WIN
+    LockWorkStation();
+#else
     QMessageBox::information(this, "TODO", "Not yet implemented!");
+#endif // Q_OS_WIN
 }
 

@@ -20,6 +20,9 @@ public:
 protected:
     void closeEvent(QCloseEvent* event) override;
     void keyPressEvent(QKeyEvent* event) override;
+    void moveEvent(QMoveEvent* event) override;
+    void showEvent(QShowEvent* event) override;
+    void hideEvent(QHideEvent* event) override;
 
 private slots:
     void on_pushButtonLock_clicked();
@@ -28,5 +31,6 @@ private:
     Ui::BreakDialog* ui;
     int mBreakDuration = 0;
     bool mForceClose = false;
+    QPoint mFixedPos;
 };
 
