@@ -2,6 +2,7 @@
 
 #include "QTrayDialog.h"
 #include <QStringList>
+#include <QSet>
 
 namespace Ui {
 class ProcessDialog;
@@ -38,7 +39,7 @@ private:
 private:
     Ui::ProcessDialog *ui;
     QStringList mProcessList;
-    QList<QThread*> mWorkerThreads;
+    QSet<QThread*> mWorkerThreads;
     bool mForceClose = false;
     QTimer* mTimer = nullptr;
     bool mIsGameRunning = false;

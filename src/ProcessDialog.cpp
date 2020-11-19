@@ -5,9 +5,9 @@
 #include <QSettings>
 #include <QTimer>
 
-ProcessDialog::ProcessDialog(QWidget *parent) :
-    QTrayDialog(parent),
-    ui(new Ui::ProcessDialog)
+ProcessDialog::ProcessDialog(QWidget* parent)
+    : QTrayDialog(parent)
+    , ui(new Ui::ProcessDialog)
 {
     ui->setupUi(this);
     setWindowFlag(Qt::WindowFullscreenButtonHint, false);
@@ -15,7 +15,7 @@ ProcessDialog::ProcessDialog(QWidget *parent) :
     setWindowFlag(Qt::MSWindowsFixedSizeDialogHint, false);
     setWindowFlag(Qt::WindowMinMaxButtonsHint, true);
 
-    for(const auto& rule : QSettings().value("GameRules").toStringList())
+    for (const auto& rule : QSettings().value("GameRules").toStringList())
         ui->editRules->appendPlainText(rule);
 
     // Automatically refresh the process list every 10 seconds
@@ -42,11 +42,11 @@ void ProcessDialog::resultReadySlot(const QStringList& processList)
     updateProcessList(ui->editFilter->text());
     mIsGameRunning = false;
     auto rules = getRules();
-    for(const QString& process : mProcessList)
+    for (const QString& process : mProcessList)
     {
-        for(const QString& rule : rules)
+        for (const QString& rule : rules)
         {
-            if(process.contains(rule, Qt::CaseInsensitive))
+            if (process.contains(rule, Qt::CaseInsensitive))
             {
                 mIsGameRunning = true;
                 return;
@@ -59,16 +59,20 @@ void ProcessDialog::refreshProcessList()
 {
     auto workerThread = new ProcessListThread(this);
     connect(workerThread, &ProcessListThread::resultReady, this, &ProcessDialog::resultReadySlot);
+    connect(workerThread, &QThread::finished, [this, workerThread] {
+        workerThread->deleteLater();
+        mWorkerThreads.remove(workerThread);
+    });
     workerThread->start();
-    mWorkerThreads.append(workerThread);
+    mWorkerThreads.insert(workerThread);
 }
 
 void ProcessDialog::closeEvent(QCloseEvent* event)
 {
-    if(mForceClose)
+    if (mForceClose)
     {
         mTimer->stop();
-        for(QThread* thread : mWorkerThreads)
+        for (QThread* thread : mWorkerThreads)
             thread->wait();
     }
     QSettings().setValue("GameRules", getRules());
@@ -93,13 +97,13 @@ void ProcessDialog::on_buttonAddRule_clicked()
 void ProcessDialog::updateProcessList(const QString& filter)
 {
     ui->editProcesses->clear();
-    for(QString& s : mProcessList)
+    for (QString& s : mProcessList)
     {
-        if(filter.isEmpty())
+        if (filter.isEmpty())
         {
             ui->editProcesses->appendPlainText(s);
         }
-        else if(s.contains(filter, Qt::CaseInsensitive))
+        else if (s.contains(filter, Qt::CaseInsensitive))
         {
             ui->editProcesses->appendPlainText(s);
         }
@@ -114,17 +118,17 @@ QStringList ProcessDialog::getRules() const
 {
     auto l = ui->editRules->toPlainText().split('\n', QString::SkipEmptyParts);
     QStringList list;
-    for(const auto& x : l)
+    for (const auto& x : l)
     {
         auto t = x.trimmed();
-        if(t.isEmpty())
+        if (t.isEmpty())
             continue;
         list << t;
     }
     return l;
 }
 
-void ProcessDialog::on_editFilter_textChanged(const QString &arg1)
+void ProcessDialog::on_editFilter_textChanged(const QString& arg1)
 {
     ui->buttonAddRule->setEnabled(!arg1.isEmpty());
 }
