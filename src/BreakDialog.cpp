@@ -39,7 +39,12 @@ void BreakDialog::setBreakProgress(int seconds)
 
 void BreakDialog::setForceClose()
 {
-	mForceClose = true;
+    mForceClose = true;
+}
+
+void BreakDialog::setSuggestion(const QString& suggestion)
+{
+    ui->labelSuggestion->setText(tr("Suggestion: %1").arg(suggestion));
 }
 
 void BreakDialog::closeEvent(QCloseEvent* event)

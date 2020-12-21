@@ -48,6 +48,10 @@ MainWindow::MainWindow(bool testConfiguration, QWidget* parent)
     mTimerDialog->setMicroBreakMaximum(mConfiguration.mMicroBreakCycle);
     mTimerDialog->setRestBreakMaximum(mConfiguration.mRestBreakCycle);
     mTimerDialog->setIdleMaximum(mConfiguration.mMicroBreakDuration);
+
+    // Add suggestions
+    mSuggestions.append(tr("Stand up and get a glass of water"));
+    mSuggestions.append(tr("Take off your glasses and relax your eyes")); // mrfearless
 }
 
 MainWindow::~MainWindow()
@@ -145,6 +149,8 @@ void MainWindow::tickTimeoutSlot()
         mBreakDialog->setWindowTitle(type);
         mBreakDialog->move(0, 0);
         mBreakDialog->showMaximized();
+        mBreakDialog->setSuggestion("");
+        mBreakDialog->setSuggestion(mSuggestions[mSuggestionIndex++ % mSuggestions.size()]);
         setBlocked(true);
     };
 

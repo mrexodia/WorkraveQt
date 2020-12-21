@@ -16,6 +16,7 @@ public:
     void setBreakDuration(int breakDuration);
     void setBreakProgress(int seconds);
     void setForceClose();
+    void setSuggestion(const QString& suggestion);
 
 protected:
     void closeEvent(QCloseEvent* event) override;
