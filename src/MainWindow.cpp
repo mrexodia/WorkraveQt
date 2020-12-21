@@ -18,20 +18,17 @@ MainWindow::MainWindow(bool testConfiguration, QWidget* parent)
     , mBreakDialog(new BreakDialog(nullptr))
     , mProcessDialog(new ProcessDialog(this))
 {
-    if(testConfiguration)
-    {
-        mConfiguration.mMicroBreakCycle = 10;
-        mConfiguration.mMicroBreakNotification = mConfiguration.mMicroBreakCycle - 5;
-        mConfiguration.mMicroBreakDuration = 15;
+    mConfiguration.mIsTestConfiguration = testConfiguration;
 
-        mConfiguration.mRestBreakCycle = 60;
-        mConfiguration.mRestBreakNotification = mConfiguration.mRestBreakCycle - 20;
-        mConfiguration.mRestBreakDuration = 20;
-    }
-    else
-	{
-        mConfiguration.load();
-    }
+    mConfiguration.mMicroBreakCycle = 10;
+    mConfiguration.mMicroBreakNotification = mConfiguration.mMicroBreakCycle - 5;
+    mConfiguration.mMicroBreakDuration = 15;
+
+    mConfiguration.mRestBreakCycle = 60;
+    mConfiguration.mRestBreakNotification = mConfiguration.mRestBreakCycle - 20;
+    mConfiguration.mRestBreakDuration = 20;
+
+    mConfiguration.load();
     mConfiguration.dump();
 
     ui->setupUi(this);

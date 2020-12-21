@@ -2,6 +2,8 @@
 
 struct Configuration
 {
+    bool mIsTestConfiguration = false;
+
     int mMicroBreakCycle = 15 * 60;
     int mMicroBreakNotification = mMicroBreakCycle - 60;
     int mMicroBreakDuration = 45;

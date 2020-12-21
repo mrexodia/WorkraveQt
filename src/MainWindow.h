@@ -30,7 +30,6 @@ private slots:
     void on_actionOpen_triggered();
     void on_actionBreak_triggered();
     void on_actionPause_triggered();
-
     void on_action_Game_whitelist_triggered();
 
 private:
@@ -49,6 +48,8 @@ private:
     int mRestBreakTick = 0;
     bool mInRestBreak = false;
     int mIdleMaximum = 0;
+    QVector<QString> mSuggestions;
+    int mSuggestionIndex = 0;
 
     Configuration mConfiguration;
 
