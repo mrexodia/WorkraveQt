@@ -11,13 +11,14 @@ void Configuration::load()
     }
 
     QSettings settings;
-#define setting(x, d) m ## x = settings.value(#x, d).toInt()
-    setting(MicroBreakCycle, 10);
-    setting(MicroBreakNotification, 5);
-    setting(MicroBreakDuration, 15);
-    setting(RestBreakCycle, 60);
-    setting(RestBreakNotification, 40);
-    setting(RestBreakDuration, 15);
+    Configuration defaults;
+#define setting(x) m ## x = settings.value(#x, defaults.m ## x).toInt()
+    setting(MicroBreakCycle);
+    setting(MicroBreakNotification);
+    setting(MicroBreakDuration);
+    setting(RestBreakCycle);
+    setting(RestBreakNotification);
+    setting(RestBreakDuration);
 #undef setting
 }
 

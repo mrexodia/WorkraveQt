@@ -18,15 +18,16 @@ MainWindow::MainWindow(bool testConfiguration, QWidget* parent)
     , mBreakDialog(new BreakDialog(nullptr))
     , mProcessDialog(new ProcessDialog(this))
 {
-    mConfiguration.mIsTestConfiguration = testConfiguration;
+    if ((mConfiguration.mIsTestConfiguration = testConfiguration))
+    {
+        mConfiguration.mMicroBreakCycle = 10;
+        mConfiguration.mMicroBreakNotification = mConfiguration.mMicroBreakCycle - 5;
+        mConfiguration.mMicroBreakDuration = 15;
 
-    mConfiguration.mMicroBreakCycle = 10;
-    mConfiguration.mMicroBreakNotification = mConfiguration.mMicroBreakCycle - 5;
-    mConfiguration.mMicroBreakDuration = 15;
-
-    mConfiguration.mRestBreakCycle = 60;
-    mConfiguration.mRestBreakNotification = mConfiguration.mRestBreakCycle - 20;
-    mConfiguration.mRestBreakDuration = 20;
+        mConfiguration.mRestBreakCycle = 60;
+        mConfiguration.mRestBreakNotification = mConfiguration.mRestBreakCycle - 20;
+        mConfiguration.mRestBreakDuration = 20;
+    }
 
     mConfiguration.load();
     mConfiguration.dump();
@@ -52,6 +53,7 @@ MainWindow::MainWindow(bool testConfiguration, QWidget* parent)
     // Add suggestions
     mSuggestions.append(tr("Stand up and get a glass of water"));
     mSuggestions.append(tr("Take off your glasses and relax your eyes")); // mrfearless
+    mSuggestions.append(tr("Make a cup of tea!"));
 }
 
 MainWindow::~MainWindow()
