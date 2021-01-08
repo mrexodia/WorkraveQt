@@ -25,7 +25,9 @@ PreferencesDialog::~PreferencesDialog()
 
 static QString secondsToHms(int seconds)
 {
-    int h = seconds / 3600;
+    // Thanks to Can for the correct logic!
+    int h = seconds / (60 * 60);
+    seconds -= h * (60 * 60);
     int m = seconds / 60;
     int s = seconds % 60;
     return QString().sprintf("%02dh%02dm%02ds", h, m, s);
@@ -113,4 +115,5 @@ void PreferencesDialog::accept()
     mConfiguration->save();
     mConfiguration->dump();
     QDialog::accept();
+    QMessageBox::information(this, tr("Restart"), tr("Please restart the application to apply the changes."));
 }
