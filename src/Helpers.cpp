@@ -1,5 +1,7 @@
 #include "Helpers.h"
 
+#include <QCoreApplication>
+
 #ifdef Q_OS_WIN
 
 #include <Windows.h>
@@ -56,4 +58,8 @@ int getIdleTimeMs()
     return getIdleTimeImpl();
 }
 
+void restartApplication()
+{
+    QCoreApplication::exit(EXIT_RESTART);
+}
 } // namespace Helpers

@@ -1,17 +1,20 @@
 #include "PreferencesDialog.h"
 #include "ui_PreferencesDialog.h"
+
 #include <QSettings>
 #include <QMessageBox>
 
-PreferencesDialog::PreferencesDialog(Configuration* configuration, QWidget* parent) :
-    QTrayDialog(parent),
-    ui(new Ui::PreferencesDialog),
-    mConfiguration(configuration)
+#include "Helpers.h"
+
+PreferencesDialog::PreferencesDialog(Configuration* configuration, QWidget* parent)
+    : QTrayDialog(parent)
+    , ui(new Ui::PreferencesDialog)
+    , mConfiguration(configuration)
 {
     ui->setupUi(this);
-	setWindowFlag(Qt::WindowFullscreenButtonHint, false);
-	setWindowFlag(Qt::WindowStaysOnTopHint);
-	setFixedSize(size());
+    setWindowFlag(Qt::WindowFullscreenButtonHint, false);
+    setWindowFlag(Qt::WindowStaysOnTopHint);
+    setFixedSize(size());
 
 #if !defined(Q_OS_WIN)
     ui->checkBoxStartup->setEnabled(false);
@@ -35,7 +38,7 @@ static QString secondsToHms(int seconds)
 
 void PreferencesDialog::showEvent(QShowEvent* event)
 {
-#define setting(x) ui->lineEdit ## x->setText(secondsToHms(mConfiguration->m ## x))
+#define setting(x) ui->lineEdit##x->setText(secondsToHms(mConfiguration->m##x))
     setting(MicroBreakCycle);
     setting(MicroBreakNotification);
     setting(MicroBreakDuration);
@@ -43,7 +46,7 @@ void PreferencesDialog::showEvent(QShowEvent* event)
     setting(RestBreakNotification);
     setting(RestBreakDuration);
 #undef setting
-    if(ui->checkBoxStartup->isEnabled())
+    if (ui->checkBoxStartup->isEnabled())
     {
 #ifdef Q_OS_WIN
         // https://stackoverflow.com/a/38523870/1806760
@@ -58,16 +61,16 @@ void PreferencesDialog::showEvent(QShowEvent* event)
 static bool secondsFromHms(const QString& hms, int& seconds)
 {
     QRegExp rx("(\\d\\d)h(\\d\\d)m(\\d\\d)s");
-    if(!rx.exactMatch(hms))
+    if (!rx.exactMatch(hms))
         return false;
     int h = rx.cap(1).toInt();
-    if(h < 0 || h >= 24)
+    if (h < 0 || h >= 24)
         return false;
     int m = rx.cap(2).toInt();
-    if(m < 0 || m >= 60)
+    if (m < 0 || m >= 60)
         return false;
     int s = rx.cap(3).toInt();
-    if(s < 0 || s >= 60)
+    if (s < 0 || s >= 60)
         return false;
     seconds = h * 3600 + m * 60 + s;
     return true;
@@ -75,17 +78,17 @@ static bool secondsFromHms(const QString& hms, int& seconds)
 
 void PreferencesDialog::accept()
 {
-#define setting(x) \
-    if(!secondsFromHms(ui->lineEdit ## x->text(), mConfiguration->m ## x)) \
-    { \
-        ui->lineEdit ## x->setStyleSheet("QLineEdit { border: 2px solid red; }"); \
-        QMessageBox::warning(this, tr("Error"), tr("Invalid data for: %1").arg(ui->lineEdit ## x->placeholderText())); \
-        return; \
-    } \
-    else \
-    { \
-        ui->lineEdit ## x->setStyleSheet(""); \
-    } \
+#define setting(x)                                                                                                   \
+    if (!secondsFromHms(ui->lineEdit##x->text(), mConfiguration->m##x))                                              \
+    {                                                                                                                \
+        ui->lineEdit##x->setStyleSheet("QLineEdit { border: 2px solid red; }");                                      \
+        QMessageBox::warning(this, tr("Error"), tr("Invalid data for: %1").arg(ui->lineEdit##x->placeholderText())); \
+        return;                                                                                                      \
+    }                                                                                                                \
+    else                                                                                                             \
+    {                                                                                                                \
+        ui->lineEdit##x->setStyleSheet("");                                                                          \
+    }                                                                                                                \
     /**/
 
     setting(MicroBreakCycle);
@@ -97,12 +100,12 @@ void PreferencesDialog::accept()
 
 #undef setting
 
-    if(ui->checkBoxStartup->isEnabled() && mStartupChecked != ui->checkBoxStartup->isChecked())
+    if (ui->checkBoxStartup->isEnabled() && mStartupChecked != ui->checkBoxStartup->isChecked())
     {
 #ifdef Q_OS_WIN
         // https://stackoverflow.com/a/38523870/1806760
         QSettings settings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
-        if(ui->checkBoxStartup->isChecked())
+        if (ui->checkBoxStartup->isChecked())
         {
             settings.setValue(QCoreApplication::applicationName(), QCoreApplication::applicationFilePath().replace('/', '\\'));
         }
@@ -115,5 +118,11 @@ void PreferencesDialog::accept()
     mConfiguration->save();
     mConfiguration->dump();
     QDialog::accept();
-    QMessageBox::information(this, tr("Restart"), tr("Please restart the application to apply the changes."));
+    if (QMessageBox::question(
+            this,
+            tr("Restart?"),
+            tr("To apply the settings you need to restart WorkraveQt. Would you like to restart now?")) == QMessageBox::Yes)
+    {
+        Helpers::restartApplication();
+    }
 }
