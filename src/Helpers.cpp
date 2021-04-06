@@ -2,7 +2,7 @@
 
 #include <QCoreApplication>
 
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN)
 
 #include <Windows.h>
 
@@ -34,6 +34,10 @@ static int getIdleTimeImpl()
     }
     return (int)current_idle_time;
 }
+
+#elif defined(Q_OS_MAC)
+
+#include "macos_platform.h"
 
 #else
 

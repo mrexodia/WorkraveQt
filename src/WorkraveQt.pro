@@ -18,6 +18,9 @@ win32:RC_ICONS = images/sheep.ico
 macx {
     ICON = images/sheep.icns
     QMAKE_INFO_PLIST = Info.plist
+    OBJECTIVE_SOURCES += macos_platform.mm
+    SOURCES += macos_platform.h
+    QMAKE_LFLAGS += -framework CoreGraphics
 }
 
 # https://stackoverflow.com/a/58434395/1806760
