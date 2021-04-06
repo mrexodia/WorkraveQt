@@ -3,15 +3,15 @@
 
 void ProcessListThread::run()
 {
-#ifdef Q_OS_WIN
-    QProcess process;
-    process.setProcessChannelMode(QProcess::MergedChannels);
-    process.start("wmic process get commandline");
-    process.waitForFinished(-1);
-    QString s = process.readAllStandardOutput();
+	QProcess process;
+	process.setProcessChannelMode(QProcess::MergedChannels);
+	#if Q_OS_WIN
+	process.start("wmic process get commandline");
 #else
-    QString s = "";
+	process.start("ps -e -o command");
 #endif // Q_OS_WIN
+	process.waitForFinished(-1);
+	QString s = process.readAllStandardOutput();
 
     s.replace("\r", "");
     auto x = s.split('\n', QString::SkipEmptyParts);
@@ -20,7 +20,7 @@ void ProcessListThread::run()
         auto p = x[i].trimmed();
         if(i == 0 || p.isEmpty())
             continue;
-        mProcessList.append(std::move(p));
+		mProcessList.append(std::move(p));
     }
 
     emit resultReady(mProcessList);
