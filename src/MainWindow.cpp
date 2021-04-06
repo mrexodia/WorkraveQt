@@ -257,7 +257,14 @@ void MainWindow::on_actionPreferences_triggered()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    mTimerDialog->show();
+	if(mTimerDialog->isVisible())
+	{
+		mTimerDialog->hide();
+	}
+	else
+	{
+		mTimerDialog->show();
+	}
 }
 
 void MainWindow::on_actionBreak_triggered()
