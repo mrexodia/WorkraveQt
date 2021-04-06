@@ -87,16 +87,8 @@ void BreakDialog::hideEvent(QHideEvent* event)
 	QDialog::hideEvent(event);
 }
 
-#ifdef Q_OS_WIN
-#include <Windows.h>
-#endif // Q_OS_WIN
-
 void BreakDialog::on_pushButtonLock_clicked()
 {
-#ifdef Q_OS_WIN
-	LockWorkStation();
-#else
-	QMessageBox::information(this, "TODO", "Not yet implemented!");
-#endif // Q_OS_WIN
+	Helpers::lockScreen();
 }
 

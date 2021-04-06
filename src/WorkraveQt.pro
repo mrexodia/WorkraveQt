@@ -20,7 +20,7 @@ macx {
     QMAKE_INFO_PLIST = Info.plist
     OBJECTIVE_SOURCES += macos_platform.mm
     SOURCES += macos_platform.h
-    QMAKE_LFLAGS += -framework CoreGraphics
+    QMAKE_LFLAGS += -framework CoreGraphics -framework Carbon
 }
 
 # https://stackoverflow.com/a/58434395/1806760

@@ -35,15 +35,27 @@ static int getIdleTimeImpl()
     return (int)current_idle_time;
 }
 
+static void lockScreenImpl()
+{
+	LockWorkStation();
+}
+
 #elif defined(Q_OS_MAC)
 
 #include "macos_platform.h"
 
 #else
 
+#include <QMessageBox>
+
 static int getIdleTimeImpl()
 {
     return 0;
+}
+
+static void lockScreenImpl()
+{
+	QMessageBox::information(nullptr, "TODO", "Not yet implemented!");
 }
 
 #endif // Q_OS_WIN
@@ -64,6 +76,12 @@ int getIdleTimeMs()
 
 void restartApplication()
 {
-    QCoreApplication::exit(EXIT_RESTART);
+	QCoreApplication::exit(EXIT_RESTART);
 }
+
+void lockScreen()
+{
+	lockScreenImpl();
+}
+
 } // namespace Helpers
