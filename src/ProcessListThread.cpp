@@ -4,8 +4,8 @@
 void ProcessListThread::run()
 {
 	QProcess process;
-	process.setProcessChannelMode(QProcess::MergedChannels);
-	#if Q_OS_WIN
+    process.setProcessChannelMode(QProcess::MergedChannels);
+#if defined(Q_OS_WIN)
 	process.start("wmic process get commandline");
 #else
 	process.start("ps -e -o command");
