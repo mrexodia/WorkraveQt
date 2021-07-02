@@ -1,6 +1,16 @@
 # WorkraveQt
 
-Modern reimplementation of Workrave in Qt.
+Modern reimplementation of [Workrave](https://workrave.org) in Qt. It is designed to help with Repetitive Strain Injury (RSI), but in a much stricter way than the original Workrave implementation.
+
+![break](screenshots/break.png)
+
+![game list](screenshots/gamelist.png) 
+
+![preferences](screenshots/preferences.png) ![timer](screenshots/timer.png)
+
+## Getting started
+
+You can download one of the [releases](https://github.com/mrexodia/WorkraveQt/releases), extract it anywhere and open `WorkraveQt`.
 
 ## Building
 
