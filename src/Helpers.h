@@ -5,7 +5,7 @@
 namespace Helpers
 {
 QString timeFormat(int seconds);
-int getIdleTimeMs();
+int getIdleTimeS();
 void restartApplication();
 void lockScreen();
 static constexpr int EXIT_RESTART = -1;

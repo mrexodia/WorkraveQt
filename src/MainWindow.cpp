@@ -107,7 +107,7 @@ void MainWindow::tickTimeoutSlot()
     // TODO: move to settings?
     constexpr int idleThreshold = 5;
 
-    auto idleTime = Helpers::getIdleTimeMs();
+    auto idleTime = Helpers::getIdleTimeS();
     auto isIdle = idleTime > idleThreshold;
 
     if(!mInRestBreak && !mInMicroBreak && isIdle)
