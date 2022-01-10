@@ -83,9 +83,31 @@ void BreakDialog::showEvent(QShowEvent* event)
 
 void BreakDialog::hideEvent(QHideEvent* event)
 {
-	mFixedPos = QPoint(-1, -1);
-	QDialog::hideEvent(event);
+    mFixedPos = QPoint(-1, -1);
+    QDialog::hideEvent(event);
 }
+
+#if defined(Q_OS_WIN)
+
+#include <Windows.h>
+
+bool BreakDialog::nativeEvent(const QByteArray& eventType, void* message, long* result)
+{
+    if(eventType == "windows_generic_MSG")
+    {
+        // This prevents users from bypassing the break dialog with Alt+Space -> Restore
+        auto msg = (MSG*)message;
+        if(msg->message == WM_SYSCOMMAND && msg->wParam == SC_RESTORE)
+        {
+            // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-syscommand#return-value
+            *result = 0;
+            return true;
+        }
+    }
+    return QTrayDialog::nativeEvent(eventType, message, result);
+}
+
+#endif // Q_OS_WIN
 
 void BreakDialog::on_pushButtonLock_clicked()
 {

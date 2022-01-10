@@ -24,6 +24,9 @@ protected:
     void moveEvent(QMoveEvent* event) override;
     void showEvent(QShowEvent* event) override;
     void hideEvent(QHideEvent* event) override;
+#if defined(Q_OS_WIN)
+    bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
+#endif // Q_OS_WIN
 
 private slots:
     void on_pushButtonLock_clicked();
