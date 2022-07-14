@@ -39,9 +39,59 @@ static void lockScreenImpl()
 	LockWorkStation();
 }
 
+static HHOOK g_hKeyboardHook = nullptr;
+
+// Source: https://docs.microsoft.com/en-us/windows/win32/dxtecharts/disabling-shortcut-keys-in-games
+static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+    if (nCode < 0 || nCode != HC_ACTION)  // do not process message
+        return CallNextHookEx(g_hKeyboardHook, nCode, wParam, lParam);
+
+    bool bEatKeystroke = false;
+    auto p = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
+    switch (wParam)
+    {
+    case WM_KEYDOWN:
+    case WM_KEYUP:
+    {
+        bEatKeystroke = (p->vkCode == VK_LWIN || p->vkCode == VK_RWIN);
+        // Note that this will not block the Xbox Game Bar hotkeys (Win+G, Win+Alt+R, etc.)
+        break;
+    }
+    }
+
+    if (bEatKeystroke)
+        return 1;
+    else
+        return CallNextHookEx(g_hKeyboardHook, nCode, wParam, lParam);
+}
+
+static void startBreakImpl()
+{
+    if(!g_hKeyboardHook)
+        g_hKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboardProc, GetModuleHandle(nullptr), 0);
+}
+
+static void stopBreakImpl()
+{
+    if(g_hKeyboardHook)
+    {
+        UnhookWindowsHookEx(g_hKeyboardHook);
+        g_hKeyboardHook = nullptr;
+    }
+}
+
 #elif defined(Q_OS_MAC)
 
 #include "macos_platform.h"
+
+static void startBreakImpl()
+{
+}
+
+static void stopBreakImpl()
+{
+}
 
 #else
 
@@ -55,6 +105,14 @@ static int getIdleTimeImpl()
 static void lockScreenImpl()
 {
 	QMessageBox::information(nullptr, "TODO", "Not yet implemented!");
+}
+
+static void startBreakImpl()
+{
+}
+
+static void stopBreakImpl()
+{
 }
 
 #endif // Q_OS_WIN
@@ -80,7 +138,17 @@ void restartApplication()
 
 void lockScreen()
 {
-	lockScreenImpl();
+    lockScreenImpl();
+}
+
+void startBreak()
+{
+    startBreakImpl();
+}
+
+void stopBreak()
+{
+    stopBreakImpl();
 }
 
 } // namespace Helpers

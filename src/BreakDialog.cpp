@@ -77,13 +77,15 @@ void BreakDialog::moveEvent(QMoveEvent* event)
 
 void BreakDialog::showEvent(QShowEvent* event)
 {
-	mFixedPos = pos();
-	QDialog::showEvent(event);
+    mFixedPos = pos();
+    Helpers::startBreak();
+    QDialog::showEvent(event);
 }
 
 void BreakDialog::hideEvent(QHideEvent* event)
 {
     mFixedPos = QPoint(-1, -1);
+    Helpers::stopBreak();
     QDialog::hideEvent(event);
 }
 
