@@ -51,9 +51,18 @@ static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lP
     auto p = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
     switch (wParam)
     {
+    case WM_SYSKEYDOWN:
+    case WM_SYSKEYUP:
+    {
+        // Block Alt+Space
+        bEatKeystroke = p->vkCode == VK_SPACE && (p->flags & LLKHF_ALTDOWN) != 0;
+        break;
+    }
+
     case WM_KEYDOWN:
     case WM_KEYUP:
     {
+        // Block the Windows key
         bEatKeystroke = (p->vkCode == VK_LWIN || p->vkCode == VK_RWIN);
         // Note that this will not block the Xbox Game Bar hotkeys (Win+G, Win+Alt+R, etc.)
         break;
