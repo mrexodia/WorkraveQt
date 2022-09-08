@@ -132,7 +132,7 @@ QString timeFormat(int seconds)
 {
     auto minutes = seconds / 60;
     seconds = seconds % 60;
-    return QString().sprintf("%d:%02d", minutes, seconds);
+    return QString("%1:%2").arg(minutes).arg(seconds, 2, 10, QChar('0'));
 }
 
 int getIdleTimeS()

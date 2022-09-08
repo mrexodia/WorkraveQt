@@ -3,6 +3,7 @@
 
 #include <QSettings>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 #include "Helpers.h"
 
@@ -33,7 +34,7 @@ static QString secondsToHms(int seconds)
     seconds -= h * (60 * 60);
     int m = seconds / 60;
     int s = seconds % 60;
-    return QString().sprintf("%02dh%02dm%02ds", h, m, s);
+    return QString("%1h%2m%3s").arg(h, 2, 10, QChar('0')).arg(m, 2, 10, QChar('0')).arg(s, 2, 10, QChar('0'));
 }
 
 void PreferencesDialog::showEvent(QShowEvent* event)
@@ -60,16 +61,17 @@ void PreferencesDialog::showEvent(QShowEvent* event)
 
 static bool secondsFromHms(const QString& hms, int& seconds)
 {
-    QRegExp rx("(\\d\\d)h(\\d\\d)m(\\d\\d)s");
-    if (!rx.exactMatch(hms))
+    static QRegularExpression re("(\\d\\d)h(\\d\\d)m(\\d\\d)s");
+    auto match = re.match(hms);
+    if(!match.hasMatch())
         return false;
-    int h = rx.cap(1).toInt();
+    int h = match.captured(1).toInt();
     if (h < 0 || h >= 24)
         return false;
-    int m = rx.cap(2).toInt();
+    int m = match.captured(2).toInt();
     if (m < 0 || m >= 60)
         return false;
-    int s = rx.cap(3).toInt();
+    int s = match.captured(3).toInt();
     if (s < 0 || s >= 60)
         return false;
     seconds = h * 3600 + m * 60 + s;

@@ -116,7 +116,7 @@ void ProcessDialog::updateProcessList(const QString& filter)
 
 QStringList ProcessDialog::getRules() const
 {
-    auto l = ui->editRules->toPlainText().split('\n', QString::SkipEmptyParts);
+    auto l = ui->editRules->toPlainText().split('\n', Qt::SkipEmptyParts);
     QStringList list;
     for (const auto& x : l)
     {
