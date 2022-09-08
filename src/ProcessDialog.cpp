@@ -18,7 +18,7 @@ ProcessDialog::ProcessDialog(QWidget* parent)
     for (const auto& rule : QSettings().value("GameRules").toStringList())
         ui->editRules->appendPlainText(rule);
 
-    // Automatically refresh the process list every 10 seconds
+    // Automatically refresh the process list every 5 seconds
     mTimer = new QTimer(this);
     mTimer->setInterval(5000);
     connect(mTimer, &QTimer::timeout, this, &ProcessDialog::refreshProcessList);
@@ -79,6 +79,20 @@ void ProcessDialog::closeEvent(QCloseEvent* event)
     QTrayDialog::closeEvent(event);
 }
 
+void ProcessDialog::showEvent(QShowEvent* event)
+{
+    Q_UNUSED(event);
+
+    mTimer->stop();
+}
+
+void ProcessDialog::hideEvent(QHideEvent* event)
+{
+    Q_UNUSED(event);
+
+    mTimer->start();
+}
+
 void ProcessDialog::on_buttonRefresh_clicked()
 {
     refreshProcessList();
@@ -128,12 +142,8 @@ QStringList ProcessDialog::getRules() const
     return l;
 }
 
-void ProcessDialog::on_editFilter_textChanged(const QString& arg1)
+void ProcessDialog::on_editFilter_textChanged(const QString& text)
 {
-    ui->buttonAddRule->setEnabled(!arg1.isEmpty());
-}
-
-void ProcessDialog::on_editFilter_editingFinished()
-{
-    updateProcessList(ui->editFilter->text());
+    ui->buttonAddRule->setEnabled(!text.isEmpty());
+    updateProcessList(text);
 }
