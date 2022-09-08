@@ -242,12 +242,17 @@ void MainWindow::on_actionExit_triggered()
 {
     if(mBlocked-- > 0)
         return;
+    mPreferencesDialog->close();
     mTimerDialog->close();
     mBreakDialog->setForceClose();
     mBreakDialog->close();
     mProcessDialog->setForceClose();
     mProcessDialog->close();
     close();
+#if defined(Q_OS_MAC)
+    // NOTE: this is necessary on macos for some reason
+    QApplication::exit();
+#endif // Q_OS_MAC
 }
 
 void MainWindow::on_actionPreferences_triggered()
