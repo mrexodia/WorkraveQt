@@ -19,13 +19,16 @@ int main(int argc, char* argv[])
     // Test configuration with short timers for quick debugging
     // Disables saving to 'production' settings
     bool testConfiguration = false;
+    bool resetConfiguration = false;
     for (int i = 1; i < argc; i++)
     {
         if (strcmp(argv[i], "--testConfiguration") == 0)
             testConfiguration = true;
+        else if (strcmp(argv[i], "--resetConfiguration") == 0)
+            resetConfiguration = true;
     }
 
-    MainWindow w(testConfiguration);
+    MainWindow w(testConfiguration, resetConfiguration);
     Q_UNUSED(w);
 
     // Handle restart logic

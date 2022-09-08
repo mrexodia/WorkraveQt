@@ -9,7 +9,7 @@
 #include <QTimer>
 #include <QDebug>
 
-MainWindow::MainWindow(bool testConfiguration, QWidget* parent)
+MainWindow::MainWindow(bool testConfiguration, bool resetConfiguration, QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , mTrayIcon(new QSystemTrayIcon(this))
@@ -27,6 +27,10 @@ MainWindow::MainWindow(bool testConfiguration, QWidget* parent)
         mConfiguration.mRestBreakCycle = 60;
         mConfiguration.mRestBreakNotification = mConfiguration.mRestBreakCycle - 20;
         mConfiguration.mRestBreakDuration = 20;
+    }
+    else if(resetConfiguration)
+    {
+        mConfiguration.save();
     }
 
     mConfiguration.load();
@@ -161,7 +165,7 @@ void MainWindow::tickTimeoutSlot()
         QString message = tr("%1 in %2 seconds").arg(type).arg(secondsLeft);
         if(secondsLeft == 1)
             message = tr("%1 in 1 second").arg(type);
-        mTrayIcon->showMessage(QString(), message, QSystemTrayIcon::Information, 1000);
+        mTrayIcon->showMessage(QString(), message, QSystemTrayIcon::Information, 5000);
     };
 
     if(mInRestBreak)
