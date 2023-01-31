@@ -47,9 +47,6 @@ MainWindow::MainWindow(bool testConfiguration, bool resetConfiguration, QWidget*
     connect(mTickTimer, &QTimer::timeout, this, &MainWindow::tickTimeoutSlot);
     mTickTimer->start();
 
-    assert(mConfiguration.mMicroBreakCycle > mConfiguration.mMicroBreakNotification);
-    //assert(mConfiguration.mMicroBreakCycle - mConfiguration.mMicroBreakNotification < mConfiguration.mMicroBreakDuration);
-
     mTimerDialog->setMicroBreakMaximum(mConfiguration.mMicroBreakCycle);
     mTimerDialog->setRestBreakMaximum(mConfiguration.mRestBreakCycle);
     mTimerDialog->setIdleMaximum(mConfiguration.mMicroBreakDuration);

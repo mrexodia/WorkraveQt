@@ -204,7 +204,7 @@
      <item>
       <widget class="QCheckBox" name="checkBoxStartup">
        <property name="text">
-        <string>&amp;Start with Windows</string>
+        <string>&amp;Start on login</string>
        </property>
       </widget>
      </item>
