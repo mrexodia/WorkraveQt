@@ -34,7 +34,7 @@ jobs:
         nmake
         cd release
         Remove-Item *.obj, *.res, *.cpp, *.h
-        windeployqt.exe ${{ github.event.repository.name }}.exe
+        windeployqt.exe --no-compiler-runtime ${{ github.event.repository.name }}.exe
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
