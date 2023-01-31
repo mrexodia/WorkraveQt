@@ -18,13 +18,14 @@ You can download one of the [releases](https://github.com/mrexodia/WorkraveQt/re
 2. (Optional) [Configure Qt Creator](https://doc.qt.io/qtcreator/creator-configuring.html)
 3. Open `src/WorkraveQt.pro` in Qt Creator
 
-### Portable Qt (Windows, Visual Studio 2019)
+### Portable Qt installation
 
-From Git Bash:
+To avoid using Qt's official setups that require an account you can use [aqtinstall](https://github.com/miurahr/aqtinstall).
 
 ```
-curl -O -L https://code.qt.io/cgit/qbs/qbs.git/plain/scripts/install-qt.sh 1>nul
-sh install-qt.sh --directory /d/Qt --host windows_x86 --target desktop --toolchain win64_msvc2017_64 --version 5.12.9 qt 3d qtactiveqt qtbase qtcanvas3d qtconnectivity qtdeclarative qtgamepad qtgraphicaleffects qtimageformats qtlocation qtm ultimedia qtquickcontrols qtquickcontrols2 qtremoteobjects qtscxml qtsensors qtserialbus qtserialport qtspeech qtsvg qt tools qttranslations qtwebchannel qtwebsockets qtwebview qtwinextras qtxmlpatterns d3dcompiler_47 opengl32sw
+pip install aqtinstall
+aqt install-qt windows desktop 5.12.12 win64_msvc2017_64
+aqt install-tool windows desktop tools_qtcreator_gui
 ```
 
-Make sure to adjust `/d/Qt` to point to a drive of your liking (Qt in the root of a drive is preferred because of potential long paths). Also make sure to install Qt Creator (or use [Qt Visual Studio Tools](https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools2019))
+You can find more available Qt configurations [here](https://ddalcino.github.io/aqt-list-server/).
