@@ -276,12 +276,6 @@ void MainWindow::on_actionOpen_triggered()
 	}
 }
 
-void MainWindow::on_actionBreak_triggered()
-{
-    mBreakDialog->move(0, 0);
-    mBreakDialog->showMaximized();
-}
-
 void MainWindow::on_actionPause_triggered()
 {
     mPaused = !mPaused;

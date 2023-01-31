@@ -28,7 +28,6 @@ private slots:
     void on_actionExit_triggered();
     void on_actionPreferences_triggered();
     void on_actionOpen_triggered();
-    void on_actionBreak_triggered();
     void on_actionPause_triggered();
     void on_action_Game_whitelist_triggered();
 

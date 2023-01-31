@@ -1,5 +1,6 @@
 #include "ProcessListThread.h"
 #include <QProcess>
+#include <QString>
 
 void ProcessListThread::run()
 {
@@ -14,7 +15,12 @@ void ProcessListThread::run()
 	QString s = process.readAllStandardOutput();
 
     s.replace("\r", "");
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    auto x = s.split('\n', QString::SkipEmptyParts);
+#else
     auto x = s.split('\n', Qt::SkipEmptyParts);
+#endif // QT_VERSION
+
     for(int i = 0; i < x.length(); i++)
     {
         auto p = x[i].trimmed();
