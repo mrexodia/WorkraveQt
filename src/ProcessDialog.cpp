@@ -130,7 +130,11 @@ void ProcessDialog::updateProcessList(const QString& filter)
 
 QStringList ProcessDialog::getRules() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    auto l = ui->editRules->toPlainText().split('\n', QString::SkipEmptyParts);
+#else
     auto l = ui->editRules->toPlainText().split('\n', Qt::SkipEmptyParts);
+#endif // QT_VERSION
     QStringList list;
     for (const auto& x : l)
     {
