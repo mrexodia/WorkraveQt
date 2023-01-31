@@ -80,6 +80,8 @@ static bool secondsFromHms(const QString& hms, int& seconds)
 
 void PreferencesDialog::accept()
 {
+    auto configBackup = *mConfiguration;
+
 #define setting(x)                                                                                                   \
     if (!secondsFromHms(ui->lineEdit##x->text(), mConfiguration->m##x))                                              \
     {                                                                                                                \
@@ -91,7 +93,6 @@ void PreferencesDialog::accept()
     {                                                                                                                \
         ui->lineEdit##x->setStyleSheet("");                                                                          \
     }                                                                                                                \
-    /**/
 
     setting(MicroBreakCycle);
     setting(MicroBreakNotification);
@@ -100,7 +101,21 @@ void PreferencesDialog::accept()
     setting(RestBreakNotification);
     setting(RestBreakDuration);
 
-#undef setting
+    #undef setting
+
+    if(mConfiguration->mMicroBreakCycle <= mConfiguration->mMicroBreakNotification)
+    {
+        *mConfiguration = configBackup;
+        QMessageBox::warning(this, tr("Error"), tr("The micro break notification has to be before the cycle"));
+        return;
+    }
+
+    if(mConfiguration->mRestBreakCycle <= mConfiguration->mRestBreakNotification)
+    {
+        *mConfiguration = configBackup;
+        QMessageBox::warning(this, tr("Error"), tr("The rest break notification has to be before the cycle"));
+        return;
+    }
 
     if (ui->checkBoxStartup->isEnabled() && mStartupChecked != ui->checkBoxStartup->isChecked())
     {
@@ -120,11 +135,5 @@ void PreferencesDialog::accept()
     mConfiguration->save();
     mConfiguration->dump();
     QDialog::accept();
-    if (QMessageBox::question(
-            this,
-            tr("Restart?"),
-            tr("To apply the settings you need to restart WorkraveQt. Would you like to restart now?")) == QMessageBox::Yes)
-    {
-        Helpers::restartApplication();
-    }
+    Helpers::restartApplication();
 }
