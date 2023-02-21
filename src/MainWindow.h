@@ -47,7 +47,8 @@ private:
     int mRestBreakTick = 0;
     bool mInRestBreak = false;
     int mIdleMaximum = 0;
-    QVector<QString> mSuggestions;
+    QVector<QString> mMicroBreakSuggestions;
+    QVector<QString> mRestBreakSuggestions;
     int mSuggestionIndex = 0;
 
     Configuration mConfiguration;

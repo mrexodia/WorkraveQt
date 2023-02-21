@@ -8,6 +8,10 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QDebug>
+#include <QDir>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 MainWindow::MainWindow(bool testConfiguration, bool resetConfiguration, QWidget* parent)
     : QMainWindow(parent)
@@ -52,9 +56,29 @@ MainWindow::MainWindow(bool testConfiguration, bool resetConfiguration, QWidget*
     mTimerDialog->setIdleMaximum(mConfiguration.mMicroBreakDuration);
 
     // Add suggestions
-    mSuggestions.append(tr("Stand up and get a glass of water"));
-    mSuggestions.append(tr("Take off your glasses and relax your eyes")); // mrfearless
-    mSuggestions.append(tr("Make a cup of tea!"));
+
+    QFile file(QDir::current().path() + "/src/suggestions.json");
+    if(!file.open(QIODevice::ReadWrite)) {
+        qDebug() << "Failed to open suggestions.json, using default suggestions";
+
+        mMicroBreakSuggestions.append(tr("Stand up and get a glass of water"));
+        mMicroBreakSuggestions.append(tr("Take off your glasses and relax your eyes")); // mrfearless
+        mRestBreakSuggestions.append(tr("Make a cup of tea!"));
+    } else {
+        QString read = file.readAll();
+
+        QJsonDocument doc = QJsonDocument::fromJson(read.toUtf8());
+        QJsonObject obj = doc.object();
+
+        for (auto suggestion : obj.value(QString("miniBreakIdeas")).toObject()) {
+            mMicroBreakSuggestions.append(suggestion.toObject()["text"].toString());
+        }
+
+        for (auto suggestion : obj.value(QString("longBreakIdeas")).toObject()) {
+            mMicroBreakSuggestions.append(suggestion.toObject()["text"].toString());
+        }
+    }
+
 }
 
 MainWindow::~MainWindow()
@@ -153,7 +177,13 @@ void MainWindow::tickTimeoutSlot()
         mBreakDialog->move(0, 0);
         mBreakDialog->showMaximized();
         mBreakDialog->setSuggestion("");
-        mBreakDialog->setSuggestion(mSuggestions[mSuggestionIndex++ % mSuggestions.size()]);
+
+        if (mInMicroBreak) {
+            mBreakDialog->setSuggestion(mMicroBreakSuggestions[mSuggestionIndex++ % mMicroBreakSuggestions.size()]);
+        } else {
+            mBreakDialog->setSuggestion(mRestBreakSuggestions[mSuggestionIndex++ % mRestBreakSuggestions.size()]);
+        }
+
         setBlocked(true);
     };
 
