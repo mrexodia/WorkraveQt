@@ -16,7 +16,7 @@
         workrave-qt = pkgs.stdenv.mkDerivation {
           pname = "workrave-qt";
           version = "0.3";
-          src = nixpkgs.lib.cleanSource ./src;
+          src = ./src;
           cmakeFlags = [
             "-DWARNINGS=ON"
             "-DWERROR=ON"
@@ -52,5 +52,6 @@
           ];
         };
       };
+    defaultPackage.x86_64-linux = self.packages.x86_64-linux.workrave-qt;
     };
 }
