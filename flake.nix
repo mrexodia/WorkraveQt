@@ -14,7 +14,7 @@
         default = workrave-qt;
 
         workrave-qt = pkgs.stdenv.mkDerivation {
-          pname = "workrave-qt";
+          pname = "WorkraveQt";
           version = "0.3";
           src = ./src;
           cmakeFlags = [
