@@ -2,3 +2,4 @@ build*/
 *.pro.user
 *.autosave
 .DS_Store
+.idea/
