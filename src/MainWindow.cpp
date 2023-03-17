@@ -57,7 +57,7 @@ MainWindow::MainWindow(bool testConfiguration, bool resetConfiguration, QWidget*
 
     // Add suggestions
 
-    QFile file(QDir::current().path() + "/src/suggestions.json");
+    QFile file("suggestions.json");
     if(!file.open(QIODevice::ReadWrite)) {
         qDebug() << "Failed to open suggestions.json, using default suggestions";
 
@@ -168,7 +168,7 @@ void MainWindow::tickTimeoutSlot()
         mTimerDialog->setIdleProgress(idleTime);
     }
 
-    qDebug() << "mMicroBreakTick" << mMicroBreakTick << "mRestBreakTick" << mRestBreakTick << "idleTime" << idleTime;
+    //qDebug() << "mMicroBreakTick" << mMicroBreakTick << "mRestBreakTick" << mRestBreakTick << "idleTime" << idleTime;
 
     auto startBreak = [this](const QString& type, int duration)
     {
