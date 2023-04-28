@@ -58,27 +58,38 @@ MainWindow::MainWindow(bool testConfiguration, bool resetConfiguration, QWidget*
     // Add suggestions
 
     QFile file("suggestions.json");
-    if(!file.open(QIODevice::ReadWrite)) {
-        qDebug() << "Failed to open suggestions.json, using default suggestions";
-
-        mMicroBreakSuggestions.append(tr("Stand up and get a glass of water"));
-        mMicroBreakSuggestions.append(tr("Take off your glasses and relax your eyes")); // mrfearless
-        mRestBreakSuggestions.append(tr("Make a cup of tea!"));
-    } else {
+    if(file.open(QIODevice::ReadOnly))
+    {
         QString read = file.readAll();
 
         QJsonDocument doc = QJsonDocument::fromJson(read.toUtf8());
         QJsonObject obj = doc.object();
 
-        for (auto suggestion : obj.value(QString("miniBreakIdeas")).toObject()) {
+        for (auto suggestion : obj.value(QString("miniBreakIdeas")).toObject())
+        {
             mMicroBreakSuggestions.append(suggestion.toObject()["text"].toString());
         }
 
-        for (auto suggestion : obj.value(QString("longBreakIdeas")).toObject()) {
+        for (auto suggestion : obj.value(QString("longBreakIdeas")).toObject())
+        {
             mMicroBreakSuggestions.append(suggestion.toObject()["text"].toString());
         }
     }
+    else
+    {
+        qDebug() << "Failed to open suggestions.json, using default suggestions";
+    }
 
+    // Make sure there is always at least one suggestion
+    if(mMicroBreakSuggestions.empty())
+    {
+        mMicroBreakSuggestions.append(tr("Stand up and get a glass of water"));
+        mMicroBreakSuggestions.append(tr("Take off your glasses and relax your eyes")); // mrfearless
+    }
+    if(mRestBreakSuggestions.empty())
+    {
+        mRestBreakSuggestions.append(tr("Make a cup of tea!"));
+    }
 }
 
 MainWindow::~MainWindow()
