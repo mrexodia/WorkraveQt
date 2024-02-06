@@ -3,6 +3,8 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 
+#include <ctime>
+
 #include "PreferencesDialog.h"
 #include "TimerDialog.h"
 #include "BreakDialog.h"
@@ -38,15 +40,22 @@ private:
     Ui::MainWindow* ui = nullptr;
     QSystemTrayIcon* mTrayIcon = nullptr;
     QTimer* mTickTimer = nullptr;
+    time_t mLastTimeout = 0;
     PreferencesDialog* mPreferencesDialog = nullptr;
     TimerDialog* mTimerDialog = nullptr;
     BreakDialog* mBreakDialog = nullptr;
     ProcessDialog* mProcessDialog = nullptr;
     int mMicroBreakTick = 0;
-    bool mInMicroBreak = false;
+    enum class BreakType
+    {
+        None,
+        Micro,
+        Rest,
+    };
+    BreakType mActiveBreak = BreakType::None;
     int mRestBreakTick = 0;
-    bool mInRestBreak = false;
-    int mIdleMaximum = 0;
+    //int mIdleMaximum = 0;
+    BreakType mIdleState = BreakType::None;
     QVector<QString> mMicroBreakSuggestions;
     QVector<QString> mRestBreakSuggestions;
     int mSuggestionIndex = 0;
@@ -55,4 +64,6 @@ private:
 
     bool mPaused = false;
     int mBlocked = 0;
+
+    QString breakTypeName(BreakType type) const;
 };

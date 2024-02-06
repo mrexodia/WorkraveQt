@@ -12,6 +12,9 @@ struct Configuration
     int mRestBreakNotification = mRestBreakCycle - 60;
     int mRestBreakDuration = 7 * 60 + 30;
 
+    // NOTE: currently not configurable
+    int mIdleThreshold = 5;
+
     void load();
     void save();
     void dump();

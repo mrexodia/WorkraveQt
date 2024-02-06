@@ -48,6 +48,7 @@ MainWindow::MainWindow(bool testConfiguration, bool resetConfiguration, QWidget*
     connect(mTrayIcon, &QSystemTrayIcon::activated, this, &MainWindow::trayIconActivatedSlot);
     mTickTimer = new QTimer(this);
     mTickTimer->setInterval(1000);
+    mLastTimeout = time(nullptr);
     connect(mTickTimer, &QTimer::timeout, this, &MainWindow::tickTimeoutSlot);
     mTickTimer->start();
 
@@ -118,13 +119,37 @@ void MainWindow::trayIconActivatedSlot(QSystemTrayIcon::ActivationReason reason)
 
 void MainWindow::tickTimeoutSlot()
 {
-    if(mPaused || mProcessDialog->isGameRunning())
+    // Store the absolute time we last executed this callback. If the computer locks
+    // we can use this to calculate the time drift since the last callback.
+    auto previousTimeout = mLastTimeout;
+    mLastTimeout = time(nullptr);
+
+    if(mPaused)
+    {
+        // Ignore all timer events when paused
         return;
+    }
+
+    if(mProcessDialog->isGameRunning())
+    {
+        // Hide the break dialog if a game started running
+        if(mBreakDialog->isVisible())
+        {
+            mBreakDialog->showNormal();
+            mBreakDialog->hide();
+        }
+
+        // TODO: make it so the break dialog will pop up as soon as the game stops running
+
+        // Ignore all timer events when a game is running
+        return;
+    }
 
     auto resetRestBreak = [this]()
     {
-        mInRestBreak = false;
+        mActiveBreak = BreakType::None;
         mRestBreakTick = 0;
+        mBreakDialog->showNormal();
         mBreakDialog->hide();
         setBlocked(false);
         mTimerDialog->setRestBreakMaximum(mConfiguration.mRestBreakCycle);
@@ -133,156 +158,205 @@ void MainWindow::tickTimeoutSlot()
 
     auto resetMicroBreak = [this]()
     {
-        mInMicroBreak = false;
+        mActiveBreak = BreakType::None;
         mMicroBreakTick = 0;
+        mBreakDialog->showNormal();
         mBreakDialog->hide();
         setBlocked(false);
         mTimerDialog->setMicroBreakMaximum(mConfiguration.mMicroBreakCycle);
     };
 
-    // TODO: move to settings?
-    constexpr int idleThreshold = 5;
-
-    auto idleTime = Helpers::getIdleTimeS();
-    auto isIdle = idleTime > idleThreshold;
-
-    if(!mInRestBreak && !mInMicroBreak && isIdle)
+    auto startBreak = [this](BreakType type)
     {
-        // The user is idle, pause other timers
-        if(idleTime > mConfiguration.mMicroBreakDuration && mIdleMaximum != mConfiguration.mRestBreakDuration)
+        mActiveBreak = type;
+        switch(type)
         {
-            resetMicroBreak();
-            mIdleMaximum = mConfiguration.mRestBreakDuration;
-            mTimerDialog->setIdleMaximum(mIdleMaximum);
+        case BreakType::Micro:
+            mBreakDialog->setBreakDuration(mConfiguration.mMicroBreakDuration);
+            mBreakDialog->setSuggestion(mMicroBreakSuggestions[mSuggestionIndex++ % mMicroBreakSuggestions.size()]);
+            break;
+        case BreakType::Rest:
+            mBreakDialog->setBreakDuration(mConfiguration.mRestBreakDuration);
+            mBreakDialog->setSuggestion(mRestBreakSuggestions[mSuggestionIndex++ % mRestBreakSuggestions.size()]);
+            break;
+        case BreakType::None:
+            QMessageBox::critical(this, tr("Error"), "Cannot start break with BreakType::None");
+            return;
         }
-        if(idleTime > mConfiguration.mRestBreakDuration && mIdleMaximum != 0)
-        {
-            resetRestBreak();
-            mIdleMaximum = 0;
-            mTimerDialog->setIdleMaximum(mIdleMaximum);
-        }
-    }
-    else
-    {
-        mMicroBreakTick += 1;
-        mRestBreakTick += 1;
-    }
 
-    if(idleTime <= idleThreshold)
-    {
-        mIdleMaximum = mConfiguration.mMicroBreakDuration;
-        mTimerDialog->setIdleMaximum(mIdleMaximum);
-    }
-
-    if(mIdleMaximum != 0 && !mInMicroBreak && !mInRestBreak)
-    {
-        mTimerDialog->setIdleProgress(idleTime);
-    }
-
-    //qDebug() << "mMicroBreakTick" << mMicroBreakTick << "mRestBreakTick" << mRestBreakTick << "idleTime" << idleTime;
-
-    auto startBreak = [this](const QString& type, int duration)
-    {
-        mBreakDialog->setBreakDuration(duration);
-        mBreakDialog->setWindowTitle(type);
+        mBreakDialog->setWindowTitle(breakTypeName(type));
         mBreakDialog->move(0, 0);
         mBreakDialog->showMaximized();
-        mBreakDialog->setSuggestion("");
-
-        if (mInMicroBreak) {
-            mBreakDialog->setSuggestion(mMicroBreakSuggestions[mSuggestionIndex++ % mMicroBreakSuggestions.size()]);
-        } else {
-            mBreakDialog->setSuggestion(mRestBreakSuggestions[mSuggestionIndex++ % mRestBreakSuggestions.size()]);
-        }
 
         setBlocked(true);
     };
 
-    auto notifyBreak = [this](const QString& type, int secondsLeft)
+    auto notifyBreak = [this](BreakType type)
     {
-        QString message = tr("%1 in %2 seconds").arg(type).arg(secondsLeft);
+        int secondsLeft = 0;
+        switch(type)
+        {
+        case BreakType::Micro:
+        {
+            secondsLeft = mConfiguration.mMicroBreakCycle - mConfiguration.mMicroBreakNotification;
+            const int secondsUntilRestBreakNotification = mConfiguration.mRestBreakNotification - mRestBreakTick;
+            if(secondsUntilRestBreakNotification <= secondsLeft)
+            {
+                // Skip the micro break notification if a rest break notification comes right away
+                return;
+            }
+        }
+            break;
+        case BreakType::Rest:
+            secondsLeft = mConfiguration.mRestBreakCycle - mConfiguration.mRestBreakNotification;
+            break;
+        case BreakType::None:
+            QMessageBox::critical(this, tr("Error"), "Cannot notify break with BreakType::None");
+            return;
+        }
+
+        auto name = breakTypeName(type);
+        QString message = tr("%1 in %2 seconds").arg(name).arg(secondsLeft);
         if(secondsLeft == 1)
-            message = tr("%1 in 1 second").arg(type);
+        {
+            message = tr("%1 in 1 second").arg(name);
+        }
         mTrayIcon->showMessage(QString(), message, QSystemTrayIcon::Information, 5000);
     };
 
-    if(mInRestBreak)
+    // Detect idle time and time drift
+    auto timeDrift = mLastTimeout - previousTimeout;
+    auto hasTimeDrifted = timeDrift > 2;
+    auto idleTime = Helpers::getIdleTimeS();
+    if(hasTimeDrifted)
     {
-        assert(!mInMicroBreak);
-        mMicroBreakTick -= 1;
-
-        mBreakDialog->setBreakProgress(mRestBreakTick);
-        if(mRestBreakTick == mConfiguration.mRestBreakDuration)
-        {
-            resetRestBreak();
-        }
+        qDebug() << "Detected time drift (lock screen/standby?):" << timeDrift << "idleTime:" << idleTime;
+        idleTime = qMax(idleTime, timeDrift);
     }
     else
     {
-        assert(mRestBreakTick <= mConfiguration.mRestBreakCycle);
+        timeDrift = 1;
+    }
+
+    //qDebug() << "mMicroBreakTick:" << mMicroBreakTick << "mRestBreakTick:" << mRestBreakTick << "idleTime:" << idleTime << "idleState:" << (int)mIdleState;
+
+    auto isIdle = idleTime > mConfiguration.mIdleThreshold;
+    switch(mActiveBreak)
+    {
+    case BreakType::None:
+    {
+        // Idle timer state management
+        if(idleTime > mConfiguration.mRestBreakDuration)
+        {
+            if(mIdleState != BreakType::None)
+            {
+                resetRestBreak();
+                mIdleState = BreakType::None;
+                mTimerDialog->setIdleMaximum(0);
+            }
+
+            // Spin the progress bar
+            mTimerDialog->setIdleProgress(0);
+        }
+        else if(idleTime > mConfiguration.mMicroBreakDuration)
+        {
+            if(mIdleState != BreakType::Rest)
+            {
+                resetMicroBreak();
+                mIdleState = BreakType::Rest;
+                mTimerDialog->setIdleMaximum(mConfiguration.mRestBreakDuration);
+            }
+            mTimerDialog->setIdleProgress(idleTime);
+        }
+        else
+        {
+            if(mIdleState != BreakType::Micro)
+            {
+                mIdleState = BreakType::Micro;
+                mTimerDialog->setIdleMaximum(mConfiguration.mMicroBreakDuration);
+            }
+            mTimerDialog->setIdleProgress(idleTime);
+        }
+
+        // Advance the break ticks (taking into account possible time drift)
+        if(!isIdle)
+        {
+            mMicroBreakTick += timeDrift;
+            mRestBreakTick += timeDrift;
+        }
 
         // Once the rest break notification is shown, reset the micro break timer
+        // NOTE: this is an attempt to fix overlapping breaks
         if(mRestBreakTick >= mConfiguration.mRestBreakNotification)
         {
             mMicroBreakTick = 0;
             mTimerDialog->setMicroBreakMaximum(0);
         }
 
-        auto breakType = tr("Rest break");
-        mTimerDialog->setRestBreakProgress(mRestBreakTick);
-        if(mRestBreakTick == mConfiguration.mRestBreakCycle)
-        {
-            mInRestBreak = true;
-            mRestBreakTick = 0;
-            startBreak(breakType, mConfiguration.mRestBreakDuration);
-            mTimerDialog->setRestBreakMaximum(0);
-        }
-        else if(mRestBreakTick == mConfiguration.mRestBreakNotification && !isIdle)
-        {
-            const int secondsLeft = mConfiguration.mRestBreakCycle - mConfiguration.mRestBreakNotification;
-            notifyBreak(breakType, secondsLeft);
-        }
-    }
-
-    if(mInMicroBreak)
-    {
-        assert(!mInRestBreak);
-        mRestBreakTick -= 1;
-
-        mBreakDialog->setBreakProgress(mMicroBreakTick);
-        if(mMicroBreakTick == mConfiguration.mMicroBreakDuration)
-        {
-            resetMicroBreak();
-        }
-    }
-    else
-    {
+        // Update the micro break state
         assert(mMicroBreakTick <= mConfiguration.mMicroBreakCycle);
-
-        auto breakType = tr("Micro break");
         mTimerDialog->setMicroBreakProgress(mMicroBreakTick);
-        if(mMicroBreakTick == mConfiguration.mMicroBreakCycle)
+        if(mMicroBreakTick >= mConfiguration.mMicroBreakCycle)
         {
-            mInMicroBreak = true;
             mMicroBreakTick = 0;
-            startBreak(breakType, mConfiguration.mMicroBreakDuration);
+            startBreak(BreakType::Micro);
             mTimerDialog->setMicroBreakMaximum(0);
         }
         else if(mMicroBreakTick == mConfiguration.mMicroBreakNotification && !isIdle)
         {
-            const int secondsUntilRestBreakNotification = mConfiguration.mRestBreakNotification - mRestBreakTick;
-            const int secondsLeft = mConfiguration.mMicroBreakCycle - mConfiguration.mMicroBreakNotification;
-            if(secondsUntilRestBreakNotification > secondsLeft)
-            {
-                notifyBreak(breakType, secondsLeft);
-            }
+            notifyBreak(BreakType::Micro);
         }
+
+        // Update the rest break state
+        mTimerDialog->setRestBreakProgress(mRestBreakTick);
+        if(mRestBreakTick >= mConfiguration.mRestBreakCycle)
+        {
+            mRestBreakTick = 0;
+            startBreak(BreakType::Rest);
+            mTimerDialog->setRestBreakMaximum(0);
+        }
+        else if(mRestBreakTick == mConfiguration.mRestBreakNotification && !isIdle)
+        {
+            notifyBreak(BreakType::Rest);
+        }
+    }
+    break;
+
+    case BreakType::Micro:
+    {
+        // Advance micro break progress
+        mMicroBreakTick += timeDrift;
+        mBreakDialog->setBreakProgress(mMicroBreakTick);
+        if(mMicroBreakTick >= mConfiguration.mRestBreakDuration)
+        {
+            // NOTE: This can happen if the time drift was very long
+            resetRestBreak();
+            mMicroBreakTick = 0;
+        }
+        else if(mMicroBreakTick >= mConfiguration.mMicroBreakDuration)
+        {
+            resetMicroBreak();
+        }
+    }
+    break;
+
+    case BreakType::Rest:
+    {
+        // Advance rest break progress
+        mRestBreakTick += timeDrift;
+        mBreakDialog->setBreakProgress(mRestBreakTick);
+        if(mRestBreakTick >= mConfiguration.mRestBreakDuration)
+        {
+            resetRestBreak();
+        }
+    }
+    break;
     }
 }
 
 void MainWindow::on_actionExit_triggered()
 {
-    if(mBlocked-- > 0)
+    if(!mConfiguration.mIsTestConfiguration && mBlocked-- > 0)
         return;
     mPreferencesDialog->close();
     mTimerDialog->close();
@@ -323,6 +397,19 @@ void MainWindow::on_actionPause_triggered()
 void MainWindow::setBlocked(bool blocked)
 {
     mBlocked = blocked ? 10 : 0;
+}
+
+QString MainWindow::breakTypeName(BreakType type) const
+{
+    switch(type)
+    {
+    case BreakType::None:
+        return tr("No break");
+    case BreakType::Micro:
+        return tr("Micro break");
+    case BreakType::Rest:
+        return tr("Rest break");
+    }
 }
 
 void MainWindow::on_action_Game_whitelist_triggered()
