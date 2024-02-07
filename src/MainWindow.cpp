@@ -225,7 +225,7 @@ void MainWindow::tickTimeoutSlot()
     };
 
     // Detect idle time and time drift
-    auto timeDrift = mLastTimeout - previousTimeout;
+    auto timeDrift = (int)(mLastTimeout - previousTimeout);
     auto hasTimeDrifted = timeDrift > 2;
     auto idleTime = Helpers::getIdleTimeS();
     if(hasTimeDrifted)
