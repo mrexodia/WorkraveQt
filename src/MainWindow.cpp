@@ -86,10 +86,12 @@ MainWindow::MainWindow(bool testConfiguration, bool resetConfiguration, QWidget*
     {
         mMicroBreakSuggestions.append(tr("Stand up and get a glass of water"));
         mMicroBreakSuggestions.append(tr("Take off your glasses and relax your eyes")); // mrfearless
+        mMicroBreakSuggestions.append(tr("Switch your desk between sitting and standing"));
     }
     if(mRestBreakSuggestions.empty())
     {
         mRestBreakSuggestions.append(tr("Make a cup of tea!"));
+        mRestBreakSuggestions.append(tr("Do some streches"));
     }
 }
 
@@ -410,6 +412,7 @@ QString MainWindow::breakTypeName(BreakType type) const
     case BreakType::Rest:
         return tr("Rest break");
     }
+    return "<invalid>";
 }
 
 void MainWindow::on_action_Game_whitelist_triggered()
