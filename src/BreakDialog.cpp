@@ -93,7 +93,7 @@ void BreakDialog::hideEvent(QHideEvent* event)
 
 #include <Windows.h>
 
-bool BreakDialog::nativeEvent(const QByteArray& eventType, void* message, long* result)
+bool BreakDialog::nativeEvent(const QByteArray& eventType, void* message, qintptr* result)
 {
     if(eventType == "windows_generic_MSG")
     {

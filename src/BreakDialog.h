@@ -25,7 +25,7 @@ protected:
     void showEvent(QShowEvent* event) override;
     void hideEvent(QHideEvent* event) override;
 #if defined(Q_OS_WIN)
-    bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
+    bool nativeEvent(const QByteArray& eventType, void* message, qintptr* result) override;
 #endif // Q_OS_WIN
 
 private slots:
