@@ -126,8 +126,29 @@ void MainWindow::tickTimeoutSlot()
     auto previousTimeout = mLastTimeout;
     mLastTimeout = time(nullptr);
 
+    // Detect idle time and time drift
+    auto timeDrift = (int)(mLastTimeout - previousTimeout);
+    auto hasTimeDrifted = timeDrift > 2;
+    auto idleTime = Helpers::getIdleTimeS();
+    if(hasTimeDrifted)
+    {
+        qDebug() << "Detected time drift (lock screen/standby?):" << timeDrift << "idleTime:" << idleTime;
+        idleTime = qMax(idleTime, timeDrift);
+    }
+    else
+    {
+        timeDrift = 1;
+    }
+
     if(mPaused)
     {
+        // Restart the application if the user has been idle for longer than a rest break,
+        // this prevents a permanent pause state if the user goes to sleep.
+        if(idleTime > mConfiguration.mRestBreakDuration)
+        {
+            Helpers::restartApplication();
+        }
+
         // Ignore all timer events when paused
         return;
     }
@@ -225,20 +246,6 @@ void MainWindow::tickTimeoutSlot()
         }
         mTrayIcon->showMessage(QString(), message, QSystemTrayIcon::Information, 5000);
     };
-
-    // Detect idle time and time drift
-    auto timeDrift = (int)(mLastTimeout - previousTimeout);
-    auto hasTimeDrifted = timeDrift > 2;
-    auto idleTime = Helpers::getIdleTimeS();
-    if(hasTimeDrifted)
-    {
-        qDebug() << "Detected time drift (lock screen/standby?):" << timeDrift << "idleTime:" << idleTime;
-        idleTime = qMax(idleTime, timeDrift);
-    }
-    else
-    {
-        timeDrift = 1;
-    }
 
     //qDebug() << "mMicroBreakTick:" << mMicroBreakTick << "mRestBreakTick:" << mRestBreakTick << "idleTime:" << idleTime << "idleState:" << (int)mIdleState;
 
