@@ -4,6 +4,13 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
 
+# Use lowercase binary name on Linux (standard convention)
+unix:!macx {
+    TARGET = workraveqt
+} else {
+    TARGET = WorkraveQt
+}
+
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -63,10 +70,49 @@ FORMS += \
 
 win32:LIBS += -luser32
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
+# Installation rules
+unix:!macx:!qnx:!android {
+    isEmpty(PREFIX) {
+        PREFIX = /usr
+    }
+    
+    # Binary installation
+    target.path = $$PREFIX/bin
+    INSTALLS += target
+    
+    # Desktop file
+    desktop.path = $$PREFIX/share/applications
+    desktop.files = ../data/workraveqt.desktop
+    INSTALLS += desktop
+    
+    # Autostart desktop file (only for system installs - user installs handle this in script)
+    equals(PREFIX, "/usr") | equals(PREFIX, "/usr/local") {
+        autostart.path = /etc/xdg/autostart
+        autostart.files = ../data/workraveqt-autostart.desktop
+        INSTALLS += autostart
+    }
+    
+    # AppStream metainfo
+    metainfo.path = $$PREFIX/share/metainfo
+    metainfo.files = ../data/io.workrave.WorkraveQt.metainfo.xml
+    INSTALLS += metainfo
+    
+    # SVG icon (scalable)
+    icon_scalable.path = $$PREFIX/share/icons/hicolor/scalable/apps
+    icon_scalable.files = images/sheep.svg
+    icon_scalable.extra = cp $$PWD/images/sheep.svg $(INSTALL_ROOT)$$PREFIX/share/icons/hicolor/scalable/apps/workraveqt.svg
+    INSTALLS += icon_scalable
+}
+
+# Other platforms
+qnx {
+    target.path = /tmp/$${TARGET}/bin
+    INSTALLS += target
+}
+macx {
+    target.path = /Applications
+    INSTALLS += target
+}
 
 RESOURCES += \
     resources.qrc

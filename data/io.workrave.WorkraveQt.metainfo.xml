@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.workrave.WorkraveQt</id>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <name>WorkraveQt</name>
+  <summary>RSI prevention tool - take regular breaks</summary>
+  
+  <description>
+    <p>
+      WorkraveQt is a modern reimplementation of Workrave in Qt. It is designed 
+      to help prevent Repetitive Strain Injury (RSI) by reminding you to take 
+      regular breaks from your computer.
+    </p>
+    <p>
+      Unlike the original Workrave, WorkraveQt enforces breaks more strictly,
+      making it harder to skip or postpone them. This helps ensure you actually
+      take the breaks you need to stay healthy.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Configurable break intervals and durations</li>
+      <li>Game/application detection to pause breaks</li>
+      <li>System tray integration</li>
+      <li>Visual timer display</li>
+      <li>Cross-platform (Linux, Windows, macOS)</li>
+    </ul>
+  </description>
+  
+  <launchable type="desktop-id">workraveqt.desktop</launchable>
+  
+  <screenshots>
+    <screenshot type="default">
+      <caption>Break reminder dialog</caption>
+      <image>https://raw.githubusercontent.com/mrexodia/WorkraveQt/main/screenshots/break.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Game list configuration</caption>
+      <image>https://raw.githubusercontent.com/mrexodia/WorkraveQt/main/screenshots/gamelist.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Preferences dialog</caption>
+      <image>https://raw.githubusercontent.com/mrexodia/WorkraveQt/main/screenshots/preferences.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Timer display</caption>
+      <image>https://raw.githubusercontent.com/mrexodia/WorkraveQt/main/screenshots/timer.png</image>
+    </screenshot>
+  </screenshots>
+  
+  <url type="homepage">https://github.com/mrexodia/WorkraveQt</url>
+  <url type="bugtracker">https://github.com/mrexodia/WorkraveQt/issues</url>
+  
+  <provides>
+    <binary>workraveqt</binary>
+  </provides>
+  
+  <content_rating type="oars-1.1" />
+  
+  <releases>
+    <release version="0.1.0" date="2024-01-01">
+      <description>
+        <p>Initial release</p>
+      </description>
+    </release>
+  </releases>
+</component>

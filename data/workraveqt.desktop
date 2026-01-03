@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=WorkraveQt
+GenericName=RSI Prevention
+Comment=Take regular breaks to prevent Repetitive Strain Injury
+Exec=workraveqt %U
+Icon=workraveqt
+Terminal=false
+Type=Application
+Categories=Utility;Qt;
+Keywords=break;rest;timer;rsi;health;ergonomics;
+StartupNotify=true

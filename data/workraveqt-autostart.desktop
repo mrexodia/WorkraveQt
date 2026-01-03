@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=WorkraveQt
+GenericName=RSI Prevention
+Comment=Take regular breaks to prevent Repetitive Strain Injury
+Exec=workraveqt
+Icon=workraveqt
+Terminal=false
+Type=Application
+Categories=Utility;Qt;
+X-GNOME-Autostart-enabled=true
+X-KDE-autostart-after=panel
+StartupNotify=false

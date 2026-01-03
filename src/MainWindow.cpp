@@ -5,10 +5,10 @@
 
 #include <QCloseEvent>
 #include <QEvent>
+#include <QFile>
 #include <QMessageBox>
 #include <QTimer>
 #include <QDebug>
-#include <QDir>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -41,6 +41,9 @@ MainWindow::MainWindow(bool testConfiguration, bool resetConfiguration, QWidget*
     mConfiguration.dump();
 
     ui->setupUi(this);
+    
+    // Set application icon for all windows
+    QApplication::setWindowIcon(windowIcon());
     mTrayIcon->setIcon(windowIcon());
     mTrayIcon->setContextMenu(ui->menuTray);
     mTrayIcon->setToolTip(QApplication::applicationName());
@@ -102,7 +105,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::trayIconActivatedSlot(QSystemTrayIcon::ActivationReason reason)
 {
-#ifdef Q_OS_WIN
+#if !defined(Q_OS_MAC)
     if(reason == QSystemTrayIcon::Trigger)
     {
         if(mTimerDialog->isVisible())
@@ -115,8 +118,8 @@ void MainWindow::trayIconActivatedSlot(QSystemTrayIcon::ActivationReason reason)
         }
     }
 #else
-	Q_UNUSED(reason);
-#endif // Q_OS_WIN
+    Q_UNUSED(reason);
+#endif
 }
 
 void MainWindow::tickTimeoutSlot()
@@ -373,11 +376,12 @@ void MainWindow::on_actionExit_triggered()
     mBreakDialog->close();
     mProcessDialog->setForceClose();
     mProcessDialog->close();
+    mTrayIcon->hide();
     close();
-#if defined(Q_OS_MAC)
-    // NOTE: this is necessary on macos for some reason
-    QApplication::exit();
-#endif // Q_OS_MAC
+#if !defined(Q_OS_WIN)
+    // Explicitly quit the application (necessary on macOS and Linux)
+    QApplication::quit();
+#endif
 }
 
 void MainWindow::on_actionPreferences_triggered()
