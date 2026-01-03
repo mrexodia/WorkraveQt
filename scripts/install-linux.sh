@@ -105,9 +105,9 @@ for SIZE in 16 24 32 48 64 128; do
     if command -v rsvg-convert &> /dev/null; then
         rsvg-convert -w $SIZE -h $SIZE "$ICON_SVG" -o "$ICON_DIR/workraveqt.png" 2>/dev/null
     elif command -v magick &> /dev/null; then
-        magick -background none -resize ${SIZE}x${SIZE} "$ICON_SVG" "$ICON_DIR/workraveqt.png" 2>/dev/null
+        magick "$ICON_SVG" -background none -resize ${SIZE}x${SIZE} "$ICON_DIR/workraveqt.png" 2>/dev/null
     elif command -v convert &> /dev/null; then
-        convert -background none -resize ${SIZE}x${SIZE} "$ICON_SVG" "$ICON_DIR/workraveqt.png" 2>/dev/null
+        convert "$ICON_SVG" -background none -resize ${SIZE}x${SIZE} "$ICON_DIR/workraveqt.png" 2>/dev/null
     fi
 done
 

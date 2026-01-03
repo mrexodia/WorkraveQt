@@ -70,6 +70,13 @@ FORMS += \
 
 win32:LIBS += -luser32
 
+unix:!macx {
+    LIBS += -lxcb
+    lessThan(QT_MAJOR_VERSION, 6) {
+        QT += x11extras
+    }
+}
+
 # Installation rules
 unix:!macx:!qnx:!android {
     isEmpty(PREFIX) {

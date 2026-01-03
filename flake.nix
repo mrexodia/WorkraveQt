@@ -25,16 +25,16 @@
 
           installPhase = let
             desktopItem = pkgs.makeDesktopItem {
-              name = "WorkraveQt";
-              exec = "WorkraveQt";
-              icon = "sheep";
+              name = "workraveqt";
+              exec = "workraveqt";
+              icon = "workraveqt";
               desktopName = "WorkraveQt";
               genericName = "WorkraveQt";
               categories = ["Utility"];
             };
           in ''
-            install -Dm755 WorkraveQt -t $out/bin
-            install -Dm644 images/sheep.svg -t $out/share/icons/hicolor/scalable/apps
+            install -Dm755 workraveqt -t $out/bin
+            install -Dm644 images/sheep.svg $out/share/icons/hicolor/scalable/apps/workraveqt.svg
 
             # Create Desktop Item
             mkdir -p "$out/share/applications"
@@ -49,7 +49,11 @@
 
           buildInputs = with pkgs; [
             qt5.qtbase
+            qt5.qtx11extras
+            xorg.libxcb
           ];
+
+          meta.mainProgram = "workraveqt";
         };
       };
     defaultPackage.x86_64-linux = self.packages.x86_64-linux.workrave-qt;

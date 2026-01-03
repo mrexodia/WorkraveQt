@@ -11,6 +11,11 @@ int main(int argc, char* argv[])
     setvbuf(stdout, nullptr, _IONBF, 0);
     setvbuf(stderr, nullptr, _IONBF, 0);
 
+#if defined(Q_OS_LINUX)
+    // Force X11 on Linux to allow window positioning (Wayland doesn't support it)
+    qputenv("QT_QPA_PLATFORM", "xcb");
+#endif
+
     QApplication a(argc, argv);
     QCoreApplication::setOrganizationName("WorkraveQt");
     QCoreApplication::setOrganizationDomain("workrave.io");

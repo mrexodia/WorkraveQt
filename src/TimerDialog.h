@@ -22,9 +22,11 @@ public:
 
 protected:
     void closeEvent(QCloseEvent* event) override;
+    void showEvent(QShowEvent* event) override;
 
 private:
+    void applySkipTaskbarHint();
     Ui::TimerDialog* ui;
-	bool mForceClose = false;
+    bool mForceClose = false;
 };
 

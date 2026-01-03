@@ -15,6 +15,8 @@ ProcessDialog::ProcessDialog(QWidget* parent)
     setWindowFlag(Qt::MSWindowsFixedSizeDialogHint, false);
     setWindowFlag(Qt::WindowMinMaxButtonsHint, true);
 
+    restoreDialogGeometry();
+
     for (const auto& rule : QSettings().value("GameRules").toStringList())
         ui->editRules->appendPlainText(rule);
 

@@ -17,6 +17,8 @@ PreferencesDialog::PreferencesDialog(Configuration* configuration, QWidget* pare
     setWindowFlag(Qt::WindowStaysOnTopHint);
     setFixedSize(size());
 
+    restoreDialogGeometry();
+
 #if !defined(Q_OS_WIN)
     ui->checkBoxStartup->setEnabled(false);
 #endif // Q_OS_WIN
